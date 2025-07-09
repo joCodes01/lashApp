@@ -1,0 +1,43 @@
+CREATE TABLE clients (
+    clientID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    firstName VARCHAR(255),
+	lastName VARCHAR(255),
+    email VARCHAR(255),
+    phoneNumber VARCHAR(255),
+    birthDate VARCHAR(255),
+    address VARCHAR(255),
+    GPnanme VARCHAR(255),
+    GPaddress VARCHAR(255),
+    emergencyContactName VARCHAR(255),
+    emergencyContactPhone VARCHAR(255),
+    contactLenses VARCHAR(255),
+    medicalConditions VARCHAR(255),
+    allergies VARCHAR(255),
+    medication VARCHAR(255),
+    adhesivePatchTest VARCHAR(255),
+    removerPatchTest VARCHAR(255),
+    tintPatchTest VARCHAR(255),
+    liftPatchTest VARCHAR(255),
+    clientNotes VARCHAR(255)
+    );
+   
+    CREATE TABLE appointments(
+        appID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+        appDate DATE,
+        appTime VARCHAR(255),
+        lashLength VARCHAR(255),
+        lashBrand VARCHAR(255),
+        lashWidth VARCHAR(255),
+        lashCurl VARCHAR(255),
+        adhesive VARCHAR(255),
+        remover VARCHAR(255),
+        tint VARCHAR(255),
+        lift VARCHAR(255),
+        beforePhoto VARCHAR(255),
+        afterPhoto VARCHAR(255)
+        );
+        
+      
+
+ALTER TABLE appointments
+ADD COLUMN clientID INT;
