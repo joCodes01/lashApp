@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Clients</title>
+    <link rel="stylesheet" href="style.css">
+    <title>Client Record</title>
 </head>
 <body>
-    <h1>Client</h1>
-    <div>
-        <div>
-            <form method="POST" action="" id="clientForm">
+   
+    <h1>Client Record</h1>
+    <div class="client-record-container">
+        <div class="form-container">
+            <form method="POST" action="" id="clientForm" class="CRUD-form">
                 <label for="firstName">First name</label>
                 <input type="text" name="firstName" id="firstName">
 
@@ -41,7 +43,11 @@
                 <input type="text" name="emergencyContactPhone" id="emergencyContactPhone">
 
                 <label for="contactLenses">Contact lenses</label>
-                <input type="text" name="contactLenses" id="contactLenses">
+                <select name="contactLenses" id="contactLenses">
+                    <option selected>choose option</option>
+                    <option>Wears contact lenses</option>
+                    <option>Does not wear contact lenses</option>
+                </select>
 
                 <label for="medicalConditions">Medical conditions</label>
                 <input type="text" name="medicalConditions" id="medicalConditions">
@@ -65,14 +71,14 @@
                 <input type="text" name="liftPatchTest" id="liftPatchTest">
 
                 <label for="clientNotes">Client notes</label>
-                <input type="text" name="clientNotes" id="clientNotes">
+                <input type="textarea" name="clientNotes" id="clientNotes">
 
                 <!-- check for appropriate modern submit method -->
 
             </form>
         </div>
-        <div>
-            <form>
+        <div class="form-container">
+            <form method="POST" action="" id="appForm" class="CRUD-form">
                 <label for="appType">Appointment type</label>
                 <select name="appType" id="appType">
                     <option>Lash extensions - full set</option>
@@ -95,6 +101,9 @@
 
                 <label for="appTime">Time</label>
                 <input type="time" name="appTime" id="appTime">
+
+                <label for="duration">Duration</label>
+                <input type="number" step="0.25" value="0.00" name="duration" id="duration">
 
                 <label for="lashLength">Lash length</label>
                 <input type="text" name="lashLength" id="lashLength">
@@ -121,7 +130,7 @@
                 <input type="text" name="lift" id="lift">
 
                 <label for="notes">Notes</label>
-                <input type="text" name="notes" id="notes">
+                <input type="textarea" name="notes" id="notes">
 
                 <label for="beforePhoto">Before photo</label>
                 <input type="file" name="beforePhoto" id="beforePhoto">
