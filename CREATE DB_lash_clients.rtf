@@ -23,6 +23,7 @@ CREATE TABLE clients (
    
     CREATE TABLE appointments(
         appID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+        clientID INT,
         appDate DATE,
         appTime VARCHAR(255),
         lashLength VARCHAR(255),
@@ -38,6 +39,3 @@ CREATE TABLE clients (
         );
         
       
-
-ALTER TABLE appointments
-ADD COLUMN clientID INT;

@@ -4,11 +4,11 @@
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
-
     //if the form submitted is the client form then do these checks
     if(isset($_POST['formID'])){
         
         if($_POST['formID'] == 'clientForm') {
+            echo "client form submitted";
             
 
             if(isset($_POST['firstName'])){
@@ -91,13 +91,200 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
          //if the form submitted is the appointment form then do these checks
         if($_POST['formID'] == 'appForm') {
+
+            echo "appointment form submitted";
             
-            if(isset($_POST['']))
+            if(isset($_POST['appType'])){
+                $sanitize_appType = $_POST['appType'];
+                $appType = htmlspecialchars($sanitize_appType);
+            }
+            if(isset($_POST['cost'])){
+                $sanitize_cost = $_POST['cost'];
+                $cost = htmlspecialchars($sanitize_cost);
+            }
+            if(isset($_POST['appDate'])){
+                $sanitize_appDate = $_POST['appDate'];
+                $appDate = htmlspecialchars($sanitize_appDate);
+            }
+            if(isset($_POST['appTime'])){
+                $sanitize_appTime = $_POST['appTime'];
+                $appTime = htmlspecialchars($sanitize_appTime);
+            }
+            if(isset($_POST['duration'])){
+                $sanitize_duration = $_POST['duration'];
+                $duration = htmlspecialchars($sanitize_duration);
+            }
+            if(isset($_POST['lashLength'])){
+                $sanitize_lashLength = $_POST['lashLength'];
+                $lashLength = htmlspecialchars($sanitize_lashLength);
+            }
+            if(isset($_POST['lashBrand'])){
+                $sanitize_lashBrand = $_POST['lashBrand'];
+                $lashBrand = htmlspecialchars($sanitize_lashBrand);
+
+                echo $lashBrand;
+            }
+            if(isset($_POST['lashWidth'])){
+                $sanitize_lashWidth = $_POST['lashWidth'];
+                $lashWidth = htmlspecialchars($sanitize_lashWidth);
+            }
+            if(isset($_POST['lashCurl'])){
+                $sanitize_lashCurl = $_POST['lashCurl'];
+                $lashCurl = htmlspecialchars($sanitize_lashCurl);
+            }
+            if(isset($_POST['adhesive'])){
+                $sanitize_adhesive = $_POST['adhesive'];
+                $adhesive = htmlspecialchars($sanitize_adhesive);
+            }
+            if(isset($_POST['remover'])){
+                $sanitize_remover = $_POST['remover'];
+                $remover = htmlspecialchars($sanitize_remover);
+            }
+            if(isset($_POST['tint'])){
+                $sanitize_tint = $_POST['tint'];
+                $tint = htmlspecialchars($sanitize_tint);
+            }
+            if(isset($_POST['lift'])){
+                $sanitize_lift = $_POST['lift'];
+                $lift = htmlspecialchars($sanitize_lift);
+            }
+             if(isset($_POST['appNotes'])){
+                $sanitize_appNotes = $_POST['appNotes'];
+                $appNotes = htmlspecialchars($sanitize_appNotes);
+            }
+
+            //image upload
+
+            //make a date string to re-name uploaded images
+            $date = new DateTime(); 
+            $dateString = date_format($date, 'Y-m-d_H-i-s');
+            
+            //UPLOAD BEFORE PHOTO
+            if(isset($_FILES['beforePhoto']) && $_FILES["beforePhoto"]["error"] === UPLOAD_ERR_OK) {
+                echo "<br> <p>image is uploaded<p>";
+                
+
+                //upload image   
+                 
+                $targetDir = "photos/";
+                $targetFile = $targetDir . basename($_FILES["beforePhoto"]["name"]);
+                $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+                //rename the uploaded file to a date string
+                $targetFileRename = $targetDir . $dateString . "_before" . "." . $imageFileType;
+
+                $uploadOk = TRUE;
+               
+
+                echo "<br>" . "image file type is" . $imageFileType . "<br>";
+                echo $targetFileRename;
+          
+                //check if the file is an image
+                $checkimage = getimagesize($_FILES["beforePhoto"]["tmp_name"]);
+
+                if ($checkimage === false) {
+                    echo "Sorry this file is not an image.";
+                    $uploadOk = FALSE;
+                }
+
+                //check file size does not exceed 5MB
+                if ($_FILES["beforePhoto"]["size"] > 5000000) {
+                    echo "File is too large. 5MB allowed";
+                    $uploadOk = FALSE;
+                }
+
+                //check file type is JPG, JPEG, PNG, or GIF
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                    $uploadOk = FALSE;
+                }
+
+                //ADD CLIENT ID TO THE FILE NAME
+
+                if ($uploadOk) {
+                    move_uploaded_file($_FILES["beforePhoto"]["tmp_name"], $targetFileRename);
+
+                    //connect to the database
+                    include "dbconnect.php";
+
+                    //set the image file name
+                    $beforePhoto = $_FILES["beforePhoto"]["name"];
+                }
+            
+            } 
+            else {
+                //if no file is uploaded then default to placeholder.jpg
+                $beforePhoto = "/testcabin.jpg";
+            }
+
+
+
+            //UPLOAD AFTER PHOTO
+            if(isset($_FILES['afterPhoto']) && $_FILES["afterPhoto"]["error"] === UPLOAD_ERR_OK) {
+                echo "<br> <p>image is uploaded<p>";
+                
+
+                //upload image   
+                 
+                $targetDir = "photos/";
+                $targetFile = $targetDir . basename($_FILES["afterPhoto"]["name"]);
+                $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
+
+                //rename the uploaded file to a date string
+                $targetFileRename = $targetDir . $dateString . "_after" . "." . $imageFileType;
+
+                $uploadOk = TRUE;
+               
+
+                echo "<br>" . "image file type is" . $imageFileType . "<br>";
+                echo $targetFileRename;
+          
+                //check if the file is an image
+                $checkimage = getimagesize($_FILES["afterPhoto"]["tmp_name"]);
+
+                if ($checkimage === false) {
+                    echo "Sorry this file is not an image.";
+                    $uploadOk = FALSE;
+                }
+
+                //check file size does not exceed 5MB
+                if ($_FILES["afterPhoto"]["size"] > 5000000) {
+                    echo "File is too large. 5MB allowed";
+                    $uploadOk = FALSE;
+                }
+
+                //check file type is JPG, JPEG, PNG, or GIF
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+                    $uploadOk = FALSE;
+                }
+
+                //ADD CLIENT ID TO THE FILE NAME
+
+                if ($uploadOk) {
+                    move_uploaded_file($_FILES["afterPhoto"]["tmp_name"], $targetFileRename);
+
+                    //connect to the database
+                    include "dbconnect.php";
+
+                    //set the image file name
+                    $beforePhoto = $_FILES["afterPhoto"]["name"];
+                }
+            
+            } 
+            else {
+                //if no file is uploaded then default to placeholder.jpg
+                $afterPhoto = "/placeholder.jpg";
+            }
+
+
         }
+
+
+
+
     }
-
 }
-
 
 ?>
 
@@ -119,6 +306,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <!-- FORM ID  hidden   -->
                 <input type="hidden" name="formID" id="clientForm" value="clientForm">
+
+                <select name="CRUDclient">
+                    <option value="CREATE">Create new client record</option>
+                    <option value="UPDATE">Update client record</option>
+                    <option value="DELETE">Delete client record</option>
+                </select>
+
 
 
                 <label for="firstName">First name</label>
@@ -188,10 +382,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
         </div>
         <div class="form-container">
-            <form method="POST" action="" id="appForm" class="CRUD-form">
+            
+            <form method="POST" action="" id="appForm" class="CRUD-form" enctype="multipart/form-data">
 
                 <!-- FORM ID     -->
-                <input type="hidden" name="formID" id="appForm">
+                <input type="hidden" name="formID" id="appForm" value="appForm">
+
+                 <select name="CRUDapp">
+                    <option value="CREATE">Create new appointment</option>
+                    <option value="UPDATE">Update appointment</option>
+                    <option value="DELETE">Delete appointment</option>
+                </select>
 
 
                 <label for="appType">Appointment type</label>
@@ -201,10 +402,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option>Lash extensions - half set: 90</option>
                     <option>Lash extensions - infills (up to 3 weeks): 90</option>
                     <option>Lash extensions - infills (3 weeks plus): 120</option>
-                    <option>Lash extensions - removal: 30</option>
+                    <option>Lash extensions - removal: 35</option>
                     <option>Lash lift & tint: 105</option>
                     <option>Lash lift: 90</option>
-                    <option>Lash tint: 30</option>
+                    <option>Lash tint: 35</option>
                     <option>Consultation</option>
                 </select>
 
@@ -244,14 +445,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="lift">Lift</label>
                 <input type="text" name="lift" id="lift">
 
-                <label for="notes">Notes</label>
-                <input type="textarea" name="notes" id="notes">
+                <label for="appNotes">Notes</label>
+                <input type="textarea" name="appNotes" id="appNotes">
 
                 <label for="beforePhoto">Before photo</label>
-                <input type="file" name="beforePhoto" id="beforePhoto">
+                <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif">
 
                 <label for="afterPhoto">After photo</label>
-                <input type="file" name="afterPhoto" id="afterPhoto">
+                <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif">
 
 
                 <button type="submit">Submit</button>
