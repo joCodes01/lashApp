@@ -8,9 +8,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     if(isset($_POST['formID'])){
         
         if($_POST['formID'] == 'clientForm') {
-            echo "client form submitted";
             
+            echo "client form submitted";
 
+            if(isset($_POST['CRUDclient'])){
+                $sanitize_CRUDclient = $_POST['CRUDclient'];
+                $CRUDclient = htmlspecialchars($sanitize_CRUDclient);
+            }
             if(isset($_POST['firstName'])){
                 $sanitize_firstName = $_POST['firstName'];
                 $firstName = htmlspecialchars($sanitize_firstName);
@@ -19,6 +23,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sanitize_lastName = $_POST['lastName'];
                 $lastName = htmlspecialchars($sanitize_lastName);
             }
+            if(isset($_POST['birthDate'])){
+                $sanitize_birthDate = $_POST['birthDate'];
+                $birthDate = htmlspecialchars($sanitize_birthDate);
+            }
             if(isset($_POST['email'])){
                 $sanitize_email = $_POST['email'];
                 $email = htmlspecialchars($sanitize_email);
@@ -26,10 +34,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             if(isset($_POST['phoneNumber'])){
                 $sanitize_phoneNumber = $_POST['phoneNumber'];
                 $phoneNumber = htmlspecialchars($sanitize_phoneNumber);
-            }
-            if(isset($_POST['birthDate'])){
-                $sanitize_birthDate = $_POST['birthDate'];
-                $birthDate = htmlspecialchars($sanitize_birthDate);
             }
             if(isset($_POST['address'])){
                 $sanitize_address = $_POST['address'];
@@ -87,13 +91,70 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sanitize_clientNotes = $_POST['clientNotes'];
                 $clientNotes = htmlspecialchars($sanitize_clientNotes);
             }
+
+            if($_POST['CRUDclient'] == 'CREATE') {
+                
+                
+                include 'dbconnect.php';
+
+                $stmt = $conn->prepare("INSERT INTO clients (
+                    firstName, 
+                    lastName, 
+                    birthDate, 
+                    email, 
+                    phoneNumber, 
+                    address, 
+                    GPname, 
+                    GPaddress, 
+                    emergencyContactName, 
+                    emergencyContactPhone, 
+                    contactLenses, 
+                    medicalConditions, 
+                    allergies, 
+                    medication,
+                    adhesivePatchTest,
+                    removerPatchTest,
+                    tintPatchTest,
+                    liftPatchTest,
+                    clientNotes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            
+                $stmt->bind_param("sssssssssssssssssss", 
+                    $firstName, 
+                    $lastName, 
+                    $birthDate, 
+                    $email, 
+                    $phoneNumber, 
+                    $address, 
+                    $GPname, 
+                    $GPaddress, 
+                    $emergencyContactName, 
+                    $emergencyContactPhone,
+                    $contactLenses,
+                    $medicalConditions,
+                    $allergies,
+                    $medication,
+                    $adhesivePatchTest,
+                    $removerPatchTest,
+                    $tintPatchTest,
+                    $liftPatchTest,
+                    $clientNotes);
+                $stmt->execute();
+
+                $stmt->close();
+            }
+
+
         }
 
          //if the form submitted is the appointment form then do these checks
         if($_POST['formID'] == 'appForm') {
 
             echo "appointment form submitted";
-            
+
+            if(isset($_POST['CRUDapp'])){
+                $sanitize_CRUDapp = $_POST['CRUDapp'];
+                $CRUDapp = htmlspecialchars($sanitize_CRUDapp);
+            }
             if(isset($_POST['appType'])){
                 $sanitize_appType = $_POST['appType'];
                 $appType = htmlspecialchars($sanitize_appType);
@@ -170,8 +231,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $targetFile = $targetDir . basename($_FILES["beforePhoto"]["name"]);
                 $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
+                
+
                 //rename the uploaded file to a date string
                 $targetFileRename = $targetDir . $dateString . "_before" . "." . $imageFileType;
+                //set the image file name for upload to DB
+                $beforePhoto = $dateString . "_before" . "." . $imageFileType;
 
                 $uploadOk = TRUE;
                
@@ -207,8 +272,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     //connect to the database
                     include "dbconnect.php";
 
-                    //set the image file name
-                    $beforePhoto = $_FILES["beforePhoto"]["name"];
+                
                 }
             
             } 
@@ -230,8 +294,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $targetFile = $targetDir . basename($_FILES["afterPhoto"]["name"]);
                 $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
+                
+
                 //rename the uploaded file to a date string
                 $targetFileRename = $targetDir . $dateString . "_after" . "." . $imageFileType;
+                //set the image file name
+                $afterPhoto = $dateString . "_after" . "." . $imageFileType;
 
                 $uploadOk = TRUE;
                
@@ -262,20 +330,64 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 //ADD CLIENT ID TO THE FILE NAME
 
                 if ($uploadOk) {
+                    
                     move_uploaded_file($_FILES["afterPhoto"]["tmp_name"], $targetFileRename);
+                    
 
                     //connect to the database
                     include "dbconnect.php";
-
-                    //set the image file name
-                    $beforePhoto = $_FILES["afterPhoto"]["name"];
                 }
+
             
             } 
             else {
                 //if no file is uploaded then default to placeholder.jpg
                 $afterPhoto = "/placeholder.jpg";
             }
+
+            if($_POST['CRUDapp'] == 'CREATE') {
+                include 'dbconnect.php';
+
+                $stmt = $conn->prepare("INSERT INTO appointments (
+                    appType, 
+                    cost, 
+                    appDate, 
+                    appTime, 
+                    duration, 
+                    lashLength, 
+                    lashBrand, 
+                    lashWidth, 
+                    lashCurl, 
+                    adhesive, 
+                    remover, 
+                    tint, 
+                    lift, 
+                    appNotes,
+                    beforePhoto,
+                    afterPhoto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+                $stmt->bind_param("ssssssssssssssss", 
+                    $appType,    
+                    $cost, 
+                    $appDate, 
+                    $appTime, 
+                    $duration, 
+                    $lashLength, 
+                    $lashBrand, 
+                    $lashWidth, 
+                    $lashCurl, 
+                    $adhesive,
+                    $remover,
+                    $tint,
+                    $lift,
+                    $appNotes,
+                    $beforePhoto,
+                    $afterPhoto); 
+
+                $stmt->execute();
+
+                $stmt->close();
+                }
 
 
         }
@@ -321,14 +433,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <label for="lastName">Last name</label>
                 <input type="text" name="lastName" id="lastName">
 
+                <label for="birthDate">Date of birth</label>
+                <input type="date" name="birthDate" id="birthDate">
+
                 <label for="email">E-mail</label>
                 <input type="email" name="email" id="email">
 
                 <label for="phoneNumber">Phone number</label>
                 <input type="text" name="phoneNumber" id="phoneNumber">
-
-                <label for="birthDate">Date of birth</label>
-                <input type="date" name="birthDate" id="birthDate">
 
                 <label for="address">Address</label>
                 <input type="text" name="address" id="address">
@@ -387,6 +499,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <!-- FORM ID     -->
                 <input type="hidden" name="formID" id="appForm" value="appForm">
+                <input type="hidden" name="appClientID" value="">
 
                  <select name="CRUDapp">
                     <option value="CREATE">Create new appointment</option>
@@ -400,12 +513,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     <option>Lash extensions - classic full set: 120</option>
                     <option>Lash extensions - light volume: 140</option>
                     <option>Lash extensions - half set: 90</option>
-                    <option>Lash extensions - infills (up to 3 weeks): 90</option>
-                    <option>Lash extensions - infills (3 weeks plus): 120</option>
+                    <option>Lash extensions - classic - infills (up to 3 weeks): 90</option>
+                    <option>Lash extensions - hybrid - infills (up to 3 weeks): 90</option>
+                    <option>Lash extensions - light volume - infills (up to 3 weeks): 90</option>
                     <option>Lash extensions - removal: 35</option>
                     <option>Lash lift & tint: 105</option>
                     <option>Lash lift: 90</option>
-                    <option>Lash tint: 35</option>
+                    <option>Lash tint: 30</option>
                     <option>Consultation</option>
                 </select>
 

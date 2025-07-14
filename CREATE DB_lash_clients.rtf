@@ -24,8 +24,11 @@ CREATE TABLE clients (
     CREATE TABLE appointments(
         appID INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
         clientID INT,
-        appDate DATE,
+        appDate VARCHAR(255),
+        appType VARCHAR(255),
+        cost VARCHAR(255);
         appTime VARCHAR(255),
+        duration VARCHAR(255);
         lashLength VARCHAR(255),
         lashBrand VARCHAR(255),
         lashWidth VARCHAR(255),
@@ -35,7 +38,8 @@ CREATE TABLE clients (
         tint VARCHAR(255),
         lift VARCHAR(255),
         beforePhoto VARCHAR(255),
-        afterPhoto VARCHAR(255)
+        afterPhoto VARCHAR(255),
+        appNotes VARCHAR(255)
         );
         
       
