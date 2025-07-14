@@ -2,6 +2,8 @@
 
 // session_start();
 
+$clientID = "new client";
+
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
     //if the form submitted is the client form then do these checks
@@ -93,54 +95,95 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             if($_POST['CRUDclient'] == 'CREATE') {
+
+                //TO DO
+                //TO DO
+                //check client does not exist before creating client again!
                 
                 
                 include 'dbconnect.php';
 
-                $stmt = $conn->prepare("INSERT INTO clients (
-                    firstName, 
-                    lastName, 
-                    birthDate, 
-                    email, 
-                    phoneNumber, 
-                    address, 
-                    GPname, 
-                    GPaddress, 
-                    emergencyContactName, 
-                    emergencyContactPhone, 
-                    contactLenses, 
-                    medicalConditions, 
-                    allergies, 
-                    medication,
-                    adhesivePatchTest,
-                    removerPatchTest,
-                    tintPatchTest,
-                    liftPatchTest,
-                    clientNotes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            
-                $stmt->bind_param("sssssssssssssssssss", 
-                    $firstName, 
-                    $lastName, 
-                    $birthDate, 
-                    $email, 
-                    $phoneNumber, 
-                    $address, 
-                    $GPname, 
-                    $GPaddress, 
-                    $emergencyContactName, 
-                    $emergencyContactPhone,
-                    $contactLenses,
-                    $medicalConditions,
-                    $allergies,
-                    $medication,
-                    $adhesivePatchTest,
-                    $removerPatchTest,
-                    $tintPatchTest,
-                    $liftPatchTest,
-                    $clientNotes);
-                $stmt->execute();
+                $result = $conn->query("SELECT clientID FROM clients WHERE firstName = '$firstName' AND lastName = '$lastName';");
 
-                $stmt->close();
+                if($result->num_rows > 0){
+
+                    echo "<br>Client already exists, record not created.";
+
+                }else{
+
+
+                    $stmt = $conn->prepare("INSERT INTO clients (
+                        firstName, 
+                        lastName, 
+                        birthDate, 
+                        email, 
+                        phoneNumber, 
+                        address, 
+                        GPname, 
+                        GPaddress, 
+                        emergencyContactName, 
+                        emergencyContactPhone, 
+                        contactLenses, 
+                        medicalConditions, 
+                        allergies, 
+                        medication,
+                        adhesivePatchTest,
+                        removerPatchTest,
+                        tintPatchTest,
+                        liftPatchTest,
+                        clientNotes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                
+                    $stmt->bind_param("sssssssssssssssssss", 
+                        $firstName, 
+                        $lastName, 
+                        $birthDate, 
+                        $email, 
+                        $phoneNumber, 
+                        $address, 
+                        $GPname, 
+                        $GPaddress, 
+                        $emergencyContactName, 
+                        $emergencyContactPhone,
+                        $contactLenses,
+                        $medicalConditions,
+                        $allergies,
+                        $medication,
+                        $adhesivePatchTest,
+                        $removerPatchTest,
+                        $tintPatchTest,
+                        $liftPatchTest,
+                        $clientNotes);
+                    $stmt->execute();
+
+                    $stmt->close();
+
+                    $result = $conn->query("SELECT clientID FROM clients WHERE firstName = '$firstName';");
+
+                    var_dump($result);
+                    echo "<br><br>";
+
+                    $row = $result->fetch_assoc();
+
+
+
+                    var_dump($row);
+                    echo "<br><br><p>first name is: </p>" . $firstName . "<br>";
+                
+
+                    
+                    
+
+                    $clientID = $row['clientID'];
+
+                    echo $clientID;
+
+                    }
+                
+             
+
+               
+
+
             }
 
 
@@ -499,7 +542,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <!-- FORM ID     -->
                 <input type="hidden" name="formID" id="appForm" value="appForm">
-                <input type="hidden" name="appClientID" value="">
+                <label for="appClientID"></label>
+                <input type="text" name="appClientID" value="<?= $clientID; ?>">
 
                  <select name="CRUDapp">
                     <option value="CREATE">Create new appointment</option>
@@ -572,6 +616,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit">Submit</button>
 
             </form>
+            <?php echo $clientID; ?>
 
         </div>
     </div>
