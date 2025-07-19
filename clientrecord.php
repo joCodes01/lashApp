@@ -2,7 +2,9 @@
 
 // session_start();
 
-$clientID = "new client";
+//$clientID = "";
+
+//$firstName = "";
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -12,6 +14,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         if($_POST['formID'] == 'clientForm') {
             
             echo "client form submitted";
+
+            if(isset($_POST['clientID'])){
+                $sanitize_clientID = $_POST['clientID'];
+                $clientID = htmlspecialchars($sanitize_clientID);
+                echo "THE clientID VARIABLE IS SET TO: " . $clientID . "<br>";
+            }
 
             if(isset($_POST['CRUDclient'])){
                 $sanitize_CRUDclient = $_POST['CRUDclient'];
@@ -94,24 +102,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $clientNotes = htmlspecialchars($sanitize_clientNotes);
             }
 
+
+
+            //if the form is set to CREATE then create a new record
             if($_POST['CRUDclient'] == 'CREATE') {
 
-                //TO DO
-                //TO DO
-                //check client does not exist before creating client again!
-                
-                
+                //connect to the database
                 include 'dbconnect.php';
-
+                
+                //check client does not exist before creating client again!
                 $result = $conn->query("SELECT clientID FROM clients WHERE firstName = '$firstName' AND lastName = '$lastName';");
 
                 if($result->num_rows > 0){
 
                     echo "<br>Client already exists, record not created.";
 
+
+                //if client record does not already exist then create client record
+                //do not add client ID as it will be auto incremented when the record is created.
                 }else{
-
-
                     $stmt = $conn->prepare("INSERT INTO clients (
                         firstName, 
                         lastName, 
@@ -157,35 +166,84 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $stmt->close();
 
-                    $result = $conn->query("SELECT clientID FROM clients WHERE firstName = '$firstName';");
-
-                    var_dump($result);
-                    echo "<br><br>";
-
-                    $row = $result->fetch_assoc();
+                    //$result = $conn->query("SELECT clientID FROM clients WHERE firstName = '$firstName' AND lastName = '$lastName';");
 
 
-
-                    var_dump($row);
-                    echo "<br><br><p>first name is: </p>" . $firstName . "<br>";
+                }
                 
+            }
+            //if the form is set to Update then update the existing record
+            if($_POST['CRUDclient'] == 'UPDATE') {
 
-                    
-                    
+                echo "update the form";
 
-                    $clientID = $row['clientID'];
+                //connect to the database
+                include 'dbconnect.php';
+              
+                $stmt = $conn->prepare("UPDATE clients SET 
+                    firstName = ?, 
+                    lastName = ?, 
+                    birthDate = ?, 
+                    email = ?, 
+                    phoneNumber = ?,
+                    address = ?,
+                    GPname = ?,
+                    GPaddress = ?, 
+                    emergencyContactName = ?, 
+                    emergencyContactPhone = ?,
+                    contactLenses = ?,
+                    medicalConditions = ?,
+                    allergies = ?, 
+                    medication = ?,
+                    adhesivePatchTest = ?,
+                    removerPatchTest = ?,
+                    tintPatchTest = ?,
+                    liftPatchTest = ?,
+                    clientNotes = ? WHERE clientID = ?;");
 
-                    echo $clientID;
-
-                    }
-                
-             
-
+                $stmt->bind_param("sssssssssssssssssssi", 
+                    $firstName, 
+                    $lastName,        
+                    $birthDate, 
+                    $email, 
+                    $phoneNumber,  
+                    $address, 
+                    $GPname, 
+                    $GPaddress, 
+                    $emergencyContactName,  
+                    $emergencyContactPhone,       
+                    $contactLenses,
+                    $medicalConditions,
+                    $allergies,
+                    $medication,
+                    $adhesivePatchTest,
+                    $removerPatchTest,
+                    $tintPatchTest,
+                    $liftPatchTest,
+                    $clientNotes,
+                    $clientID);
                
 
+                    $stmt->execute();
 
+                    $stmt->close();
             }
+                //if client form is set to DELETE then delete the record based on clientID in the form.
+               if($_POST['CRUDclient'] == 'DELETE') {
 
+                echo "Delete the record";
+
+                //connect to the database
+                include 'dbconnect.php';
+
+
+                $stmt = $conn->prepare("DELETE FROM clients WHERE clientID = ?;");
+                $stmt->bind_param("i", $clientID);
+                $stmt->execute();
+                $stmt->close();
+
+                
+               }
 
         }
 
@@ -462,6 +520,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <!-- FORM ID  hidden   -->
                 <input type="hidden" name="formID" id="clientForm" value="clientForm">
 
+                <label for="clientID">Client ID: </label> 
+                <input type="text" id="clientID" name="clientID" >
+
                 <select name="CRUDclient">
                     <option value="CREATE">Create new client record</option>
                     <option value="UPDATE">Update client record</option>
@@ -471,7 +532,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                 <label for="firstName">First name</label>
-                <input type="text" name="firstName" id="firstName">
+                <input type="text" name="firstName" id="firstName" value="">
 
                 <label for="lastName">Last name</label>
                 <input type="text" name="lastName" id="lastName">
@@ -542,8 +603,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <!-- FORM ID     -->
                 <input type="hidden" name="formID" id="appForm" value="appForm">
-                <label for="appClientID"></label>
-                <input type="text" name="appClientID" value="<?= $clientID; ?>">
+                <label for="appClientID">Client ID: </label>
+                <input type="text" name="appClientID" value="">
 
                  <select name="CRUDapp">
                     <option value="CREATE">Create new appointment</option>
@@ -554,15 +615,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 <label for="appType">Appointment type</label>
                 <select name="appType" id="appType">
+                    <option selected></option>
                     <option>Lash extensions - classic full set: 120</option>
-                    <option>Lash extensions - light volume: 140</option>
+                    <option>Lash extensions - hybrid: 140</option>
+                    <option>Lash extensions - light volume: 160</option>
                     <option>Lash extensions - half set: 90</option>
                     <option>Lash extensions - classic - infills (up to 3 weeks): 90</option>
-                    <option>Lash extensions - hybrid - infills (up to 3 weeks): 90</option>
-                    <option>Lash extensions - light volume - infills (up to 3 weeks): 90</option>
+                    <option>Lash extensions - hybrid - infills (up to 3 weeks): 100</option>
+                    <option>Lash extensions - light volume - infills (up to 3 weeks): 110</option>
                     <option>Lash extensions - removal: 35</option>
-                    <option>Lash lift & tint: 105</option>
-                    <option>Lash lift: 90</option>
+                    <option>Lash lift & tint: 95</option>
+                    <option>Lash lift: 80</option>
                     <option>Lash tint: 30</option>
                     <option>Consultation</option>
                 </select>
@@ -616,7 +679,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <button type="submit">Submit</button>
 
             </form>
-            <?php echo $clientID; ?>
 
         </div>
     </div>
