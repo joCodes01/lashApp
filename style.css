@@ -1,5 +1,5 @@
-*{
-    box-sizing: border-box;
+*, *:before, *:after {
+  box-sizing: border-box;
 }
 h1{
     text-align: center;
@@ -20,3 +20,38 @@ h1{
     display: flex;
     flex-direction: column;
 }
+
+.appointment-record-container {
+    margin: 2rem;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 2rem;
+}
+
+.appointment-record-container img{
+    max-width: 200px;
+}
+.photos{
+    display: flex;
+    flex-direction: row;
+}
+
+/* .when-container {
+    display: flex;
+    flex-direction: row;
+}
+.when-container div{
+    margin-right: 5rem;
+}
+.lash-container{
+    display: flex;
+    flex-direction: row;
+}
+.lash-container div{
+    margin-right: 5rem;
+} */
+ .app-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    
+ }

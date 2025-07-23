@@ -1,10 +1,37 @@
 <?php 
 
-// session_start();
+session_start();
+//set client ID in session variable
+$_SESSION['clientID'] = "New client";
 
-//$clientID = "";
 
-//$firstName = "";
+
+// $CRUDclient = "";
+// $firstName = "";
+// $lastName = "";
+// $birthDate = "";
+// $email = "";
+// $phoneNumber = "";
+// $address = "";
+// $GPname = "";
+// $GPaddress = "";
+// $emergencyContactName = "";
+// $emergencyContactPhone = "";
+// $contactLenses = "";
+// $medicalConditions = "";
+// $allergies = "";
+// $medication = "";
+// $adhesivePatchTest = "";
+// $removerPatchTest = "";
+// $tintPatchTest = "";
+// $liftPatchTest = "";
+// $clientNotes = "";
+
+
+
+
+
+
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -18,7 +45,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             if(isset($_POST['clientID'])){
                 $sanitize_clientID = $_POST['clientID'];
                 $clientID = htmlspecialchars($sanitize_clientID);
+
+                //set the clientID to a session variable
+                $_SESSION['clientID'] = $clientID;
                 echo "THE clientID VARIABLE IS SET TO: " . $clientID . "<br>";
+                echo "THE clientID SESSION VARIABLE IS SET TO: " . $_SESSION['clientID'] . "<br>";
             }
 
             if(isset($_POST['CRUDclient'])){
@@ -166,7 +197,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $stmt->close();
 
-                    //$result = $conn->query("SELECT clientID FROM clients WHERE firstName = '$firstName' AND lastName = '$lastName';");
+                    
 
 
                 }
@@ -251,6 +282,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         if($_POST['formID'] == 'appForm') {
 
             echo "appointment form submitted";
+
+            if(isset($_POST['appClientID'])){
+                $sanitize_appClientID = $_POST['appClientID'];
+                $appClientID = htmlspecialchars($sanitize_appClientID);
+            }
 
             if(isset($_POST['CRUDapp'])){
                 $sanitize_CRUDapp = $_POST['CRUDapp'];
@@ -379,7 +415,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             } 
             else {
                 //if no file is uploaded then default to placeholder.jpg
-                $beforePhoto = "/testcabin.jpg";
+                $beforePhoto = "placeholder.jpg";
             }
 
 
@@ -443,52 +479,85 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             } 
             else {
                 //if no file is uploaded then default to placeholder.jpg
-                $afterPhoto = "/placeholder.jpg";
+                $afterPhoto = "placeholder.jpg";
             }
 
             if($_POST['CRUDapp'] == 'CREATE') {
+
+
+                //connect to the database
                 include 'dbconnect.php';
 
-                $stmt = $conn->prepare("INSERT INTO appointments (
-                    appType, 
-                    cost, 
-                    appDate, 
-                    appTime, 
-                    duration, 
-                    lashLength, 
-                    lashBrand, 
-                    lashWidth, 
-                    lashCurl, 
-                    adhesive, 
-                    remover, 
-                    tint, 
-                    lift, 
-                    appNotes,
-                    beforePhoto,
-                    afterPhoto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                //check if a record exists with the client ID on this date
+                $result = $conn->query("SELECT clientID FROM appointments WHERE clientID = '$appClientID' AND appDate = '$appDate'");
+                //if the record exists echo error message
+                if($result->num_rows > 0){
+                    echo "sorry an appointment for this date already exists for client ID: " . $appClientID;
+                }else {
 
-                $stmt->bind_param("ssssssssssssssss", 
-                    $appType,    
-                    $cost, 
-                    $appDate, 
-                    $appTime, 
-                    $duration, 
-                    $lashLength, 
-                    $lashBrand, 
-                    $lashWidth, 
-                    $lashCurl, 
-                    $adhesive,
-                    $remover,
-                    $tint,
-                    $lift,
-                    $appNotes,
-                    $beforePhoto,
-                    $afterPhoto); 
+                //Select all appointments with the clientID from the database
+                //check if there is an appointment with this clientID on the same date?
+                //if there is then echo sorry, appointment already exists for this client on this date
+                
 
-                $stmt->execute();
+                
+                    //else: create a new appointment.
+                    $stmt = $conn->prepare("INSERT INTO appointments (
+                        clientID,
+                        appType, 
+                        cost, 
+                        appDate, 
+                        appTime, 
+                        duration, 
+                        lashLength, 
+                        lashBrand, 
+                        lashWidth, 
+                        lashCurl, 
+                        adhesive, 
+                        remover, 
+                        tint, 
+                        lift, 
+                        appNotes,
+                        beforePhoto,
+                        afterPhoto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                $stmt->close();
+                    $stmt->bind_param("issssssssssssssss", 
+                        $appClientID,
+                        $appType,    
+                        $cost, 
+                        $appDate, 
+                        $appTime, 
+                        $duration, 
+                        $lashLength, 
+                        $lashBrand, 
+                        $lashWidth, 
+                        $lashCurl, 
+                        $adhesive,
+                        $remover,
+                        $tint,
+                        $lift,
+                        $appNotes,
+                        $beforePhoto,
+                        $afterPhoto); 
+
+                    $stmt->execute();
+
+                    $stmt->close();
                 }
+            }
+
+            // if($_POST['CRUDapp'] == 'UPDATE') {
+
+            //     include 'dbconnect.php';
+
+            //     $conn->query("SELECT appID FROM appointments WHERE clientID ")
+
+            // }
+
+            // if($_POST['CRUDapp'] == 'DELETE') {
+
+
+            // }
 
 
         }
@@ -499,6 +568,56 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+include 'dbconnect.php';
+$client = $_SESSION['clientID'];
+
+$result = $conn->query("SELECT * FROM clients WHERE clientID = '$client' ");
+
+
+echo "<br><br>";
+echo "the client variable is set to: " . $client;
+echo "<br><br>";
+var_dump($result);
+echo "<br><br>";
+
+
+if($result->num_rows > 0) {
+    echo "client found";
+
+    $row = $result->fetch_assoc();
+
+    var_dump($row);
+
+
+}else {
+    $row['firstName'] = "";
+    $row['lastName'] = "";
+    $row['birthDate'] = "";
+    $row['email'] = "";
+    $row['phoneNumber'] = "";
+    $row['address'] = "";
+    $row['GPname'] = "";
+    $row['GPaddress'] = "";
+    $row['emergencyContactName'] = "";
+    $row['emergencyContactPhone'] = "";
+    $row['contactLenses'] = "";
+    $row['medicalConditions'] = "";
+    $row['allergies'] = "";
+    $row['medication'] = "";
+    $row['adhesivePatchTest'] = "";
+    $row['removerPatchTest'] = "";
+    $row['tintPatchTest'] = "";
+    $row['liftPatchTest'] = "";
+    $row['clientNotes'] = "";
+
+}
+$conn->close();
+
+//if client ID is new client- form fields should be empty
+    //CRUD action should be CREATE
+
+//if client ID is not = new client- form fields should be populated with the client data
+
 ?>
 
 
@@ -507,6 +626,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css">
     <title>Client Record</title>
 </head>
@@ -521,8 +641,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <input type="hidden" name="formID" id="clientForm" value="clientForm">
 
                 <label for="clientID">Client ID: </label> 
-                <input type="text" id="clientID" name="clientID" >
+                 <select name="clientID">
+                    <option value="<?= $_SESSION['clientID']; ?>"> <?= $_SESSION['clientID']; ?> </option>
+                    <option value="1">1</option>
+                    <option value="3">3</option>
+                    <option value="New client">New client</option>
+                </select>
 
+                <label for="CRUDclient">Action: </label>
                 <select name="CRUDclient">
                     <option value="CREATE">Create new client record</option>
                     <option value="UPDATE">Update client record</option>
@@ -532,65 +658,65 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                 <label for="firstName">First name</label>
-                <input type="text" name="firstName" id="firstName" value="">
+                <input type="text" name="firstName" id="firstName" value="<?= $row['firstName'] ?>">
 
                 <label for="lastName">Last name</label>
-                <input type="text" name="lastName" id="lastName">
+                <input type="text" name="lastName" id="lastName" value="<?= $row['lastName'] ?>">
 
                 <label for="birthDate">Date of birth</label>
-                <input type="date" name="birthDate" id="birthDate">
+                <input type="date" name="birthDate" id="birthDate" value="<?= $row['birthDate'] ?>">
 
                 <label for="email">E-mail</label>
-                <input type="email" name="email" id="email">
+                <input type="email" name="email" id="email" value="<?= $row['email'] ?>">
 
                 <label for="phoneNumber">Phone number</label>
-                <input type="text" name="phoneNumber" id="phoneNumber">
+                <input type="text" name="phoneNumber" id="phoneNumber" value="<?= $row['phoneNumber'] ?>">
 
                 <label for="address">Address</label>
-                <input type="text" name="address" id="address">
+                <input type="text" name="address" id="address" value="<?= $row['address'] ?>">
 
                 <label for="GPname">GP name</label>
-                <input type="text" name="GPname" id="GPname">
+                <input type="text" name="GPname" id="GPname" value="<?= $row['GPname'] ?>">
 
                 <label for="GPaddress">GP address</label>
-                <input type="text" name="GPaddress" id="GPaddress">
+                <input type="text" name="GPaddress" id="GPaddress" value="<?= $row['GPaddress'] ?>">
 
                 <label for="emergencyContactName">Emergency contact name</label>
-                <input type="text" name="emergencyContactName" id="emergencyContactName">
+                <input type="text" name="emergencyContactName" id="emergencyContactName" value="<?= $row['emergencyContactName'] ?>">
 
                 <label for="emergencyContactPhone">Emergency contact phone number</label>
-                <input type="text" name="emergencyContactPhone" id="emergencyContactPhone">
+                <input type="text" name="emergencyContactPhone" id="emergencyContactPhone" value="<?= $row['emergencyContactPhone'] ?>">
 
                 <label for="contactLenses">Contact lenses</label>
-                <select name="contactLenses" id="contactLenses">
+                <select name="contactLenses" id="contactLenses" value="<?= $row['contactLenses'] ?>">
                     <option selected>choose option</option>
                     <option>Wears contact lenses</option>
                     <option>Does not wear contact lenses</option>
                 </select>
 
                 <label for="medicalConditions">Medical conditions</label>
-                <input type="text" name="medicalConditions" id="medicalConditions">
+                <input type="text" name="medicalConditions" id="medicalConditions" value="<?= $row['medicalConditions'] ?>">
 
                 <label for="allergies">Allergies</label>
-                <input type="text" name="allergies" id="allergies">
+                <input type="text" name="allergies" id="allergies" value="<?= $row['allergies'] ?>">
 
                 <label for="medication">Medication</label>
-                <input type="text" name="medication" id="medication">
+                <input type="text" name="medication" id="medication" value="<?= $row['medication'] ?>">
 
                 <label for="adhesivePatchTest">Adhesive patch test</label>
-                <input type="text" name="adhesivePatchTest" id="adhesivePatchTest">
+                <input type="text" name="adhesivePatchTest" id="adhesivePatchTest" value="<?= $row['adhesivePatchTest'] ?>">
 
                 <label for="removerPatchTest">Remover patch test</label>
-                <input type="text" name="removerPatchTest" id="removerPatchTest">
+                <input type="text" name="removerPatchTest" id="removerPatchTest" value="<?= $row['removerPatchTest'] ?>">
 
                 <label for="tintPatchTest">Tint patch test</label>
-                <input type="text" name="tintPatchTest" id="tintPatchTest">
+                <input type="text" name="tintPatchTest" id="tintPatchTest" value="<?= $row['tintPatchTest'] ?>">
 
                 <label for="liftPatchTest">Lift patch test</label>
-                <input type="text" name="liftPatchTest" id="liftPatchTest">
+                <input type="text" name="liftPatchTest" id="liftPatchTest" value="<?= $row['liftPatchTest'] ?>">
 
                 <label for="clientNotes">Client notes</label>
-                <input type="textarea" name="clientNotes" id="clientNotes">
+                <input type="textarea" name="clientNotes" id="clientNotes" value="<?= $row['clientNotes'] ?>">
 
 
                 <button type="submit">Submit</button>
@@ -604,7 +730,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <!-- FORM ID     -->
                 <input type="hidden" name="formID" id="appForm" value="appForm">
                 <label for="appClientID">Client ID: </label>
-                <input type="text" name="appClientID" value="">
+                <input type="text" name="appClientID" id="appClientID" value="<?= $_SESSION['clientID']; ?>">
 
                  <select name="CRUDapp">
                     <option value="CREATE">Create new appointment</option>
@@ -682,6 +808,122 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
         </div>
     </div>
+
+    <section>
+
+        
+        <?php 
+            include 'dbconnect.php';
+
+            $result = $conn->query("SELECT * FROM appointments WHERE clientID = '$client' ORDER BY appDate DESC");
+
+            echo "<br><br> the client id is set to: " . $client . "<br>";
+
+
+
+            if($result->num_rows > 0) {
+                
+                echo "client found";
+
+                $row = $result->fetch_all(MYSQLI_ASSOC);
+
+                // echo "<pre>";
+                // var_dump($row);
+                // echo "</pre>";
+                if($client != "New client")
+            
+                foreach($row as $appointment): ?>
+
+                    <div class="appointment-record-container">
+                     
+                        <h2> <?=$appointment['appType']?> </h2>
+                    
+                        <!-- <div class="when-container"> -->
+                        <div class="app-grid">
+                            <div>
+                                <h3>Cost</h3>
+                                <p> <?=$appointment['cost']?> </p>
+                            </div>
+                            <div>
+                                <h3>Duration</h3>
+                                <p> <?=$appointment['duration']?> </p>
+                            </div>
+                            <div>
+                                <h3>Time</h3>
+                                <p> <?=$appointment['appTime']?> </p>
+                            </div>
+                            <div>
+                                <h3>Date</h3>
+                                <p> <?=$appointment['appDate']?> </p>
+                            </div>
+                            <div>
+                                <h3>Lash length</h3>
+                                <p> <?=$appointment['lashLength']?> </p>
+                            </div>
+                            <div>
+                                <h3>Lash Brand</h3>
+                                <p> <?=$appointment['lashBrand']?> </p>
+                            </div>
+                            <div>
+                                <h3>Diameter</h3>
+                                <p> <?=$appointment['lashWidth']?> </p>
+                            </div>
+                            <div>
+                                <h3>Lash curl</h3>
+                                <p> <?=$appointment['lashCurl']?> </p>
+                            </div>
+                        
+                            <div>
+                                <h3>Adhesive</h3>
+                                <p> <?=$appointment['adhesive']?> </p>
+                            </div>
+                            <div>
+                                <h3>Remover</h3>
+                                <p> <?=$appointment['remover']?> </p>
+                            </div>
+                            <div>
+                                <h3>Tint</h3>
+                                <p> <?=$appointment['tint']?> </p>
+                            </div>
+                            <div>
+                                <h3>Lift</h3>
+                                <p> <?=$appointment['lift']?> </p>
+                            </div>
+
+                        </div>
+                        
+                        <div>
+                            <h3>Notes</h3>
+                            <p> <?=$appointment['appNotes']?> </p>
+                        </div>
+                        <div class="photos">
+                            <div>
+                                <h3>Before photo</h3>
+                                <img src="photos/<?=$appointment['beforePhoto']?>">
+                            </div>
+                            <div>
+                                <h3>After photo</h3>
+                                <img src="photos/<?=$appointment['afterPhoto']?>">
+                            </div>
+                        </div>
+                                
+                        </div>
+
+
+                    
+
+   
+                <?php endforeach; 
+                } else{
+                    $conn->close();
+                }
+                
+        ?>
+            
+
+            
+
+    </section>
 
 
 
