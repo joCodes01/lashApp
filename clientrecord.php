@@ -2,7 +2,7 @@
 
 session_start();
 //set client ID in session variable
-$_SESSION['clientID'] = "New client";
+$_SESSION['clientID'];
 
 
 
@@ -194,10 +194,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         $liftPatchTest,
                         $clientNotes);
                     $stmt->execute();
+                    //get the auto incremented client ID from the database.
+                    // $clientID = $conn->insert_id;
+
+                    // $_SESSION['clientID'] = $clientID;
+
 
                     $stmt->close();
-
-                    
 
 
                 }
@@ -635,6 +638,7 @@ $conn->close();
     <h1>Client Record</h1>
     <div class="client-record-container">
         <div class="form-container">
+            <h2>Client details</h2>
             <form method="POST" action="" id="clientForm" class="CRUD-form">
 
                 <!-- FORM ID  hidden   -->
@@ -724,6 +728,7 @@ $conn->close();
             </form>
         </div>
         <div class="form-container">
+            <h2>Appointment details</h2>
             
             <form method="POST" action="" id="appForm" class="CRUD-form" enctype="multipart/form-data">
 
