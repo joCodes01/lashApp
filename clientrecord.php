@@ -3,13 +3,18 @@
 session_start();
 //set client ID in session variable
 $_SESSION['clientID'];
+$_SESSION['appID'];
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
     //if the form submitted is the client form then do these checks
     if(isset($_POST['formID'])){
-        
+
+        if($_POST['formID'] == 'appList') {
+          
+                $_SESSION['appID'] = $_POST['appID'];
+        }
         if($_POST['formID'] == 'clientForm') {
             
             echo "client form submitted";
@@ -322,7 +327,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 
 
                 //upload image   
-                 
                 $targetDir = "photos/";
                 $targetFile = $targetDir . basename($_FILES["beforePhoto"]["name"]);
                 $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
@@ -381,12 +385,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 
 
                 //upload image   
-                 
                 $targetDir = "photos/";
                 $targetFile = $targetDir . basename($_FILES["afterPhoto"]["name"]);
                 $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
-
-                
 
                 //rename the uploaded file to a date string
                 $targetFileRename = $targetDir . $dateString . "_after" . "." . $imageFileType;
@@ -451,7 +452,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 //check if there is an appointment with this clientID on the same date?
                 //if there is then echo sorry, appointment already exists for this client on this date
                 
-
                 
                     //else: create a new appointment.
                     $stmt = $conn->prepare("INSERT INTO appointments (
@@ -534,6 +534,37 @@ if($result->num_rows > 0) {
     $row['clientNotes'] = "";
 }
 $conn->close();
+
+include 'dbconnect.php';
+$appID = $_SESSION['appID'];
+$result = $conn->query("SELECT * FROM appointments WHERE appID = '$appID' ");
+
+if($result->num_rows > 0) {
+    // echo "appointment found";
+
+    $approw = $result->fetch_assoc();
+
+}else {
+    $approw['appClientID'] = "";
+    $approw['appType'] = "";
+    $approw['cost'] = "";
+    $approw['appDate'] = "";
+    $approw['appTime'] = "";
+    $approw['duration'] = "";
+    $approw['lashLength'] = "";
+    $approw['lashBrand'] = "";
+    $approw['lashWidth'] = "";
+    $approw['lashCurl'] = "";
+    $approw['adhesive'] = "";
+    $approw['remover'] = "";
+    $approw['tint'] = "";
+    $approw['lift'] = "";
+    $approw['appNotes'] = "";
+    $approw['beforePhoto'] = "";
+    $approw['afterPhoto'] = "";
+}
+$conn->close();
+
 ?>
 
 
@@ -560,8 +591,8 @@ $conn->close();
                 <!-- FORM ID  hidden   -->
                 <input type="hidden" name="formID" id="clientForm" value="clientForm">
 
-                <label for="clientID">Client ID: </label> 
-                 <select name="clientID">
+                <label hidden for="clientID">Client ID: </label> 
+                 <select hidden name="clientID">
                     <option value="<?= $_SESSION['clientID']; ?>"> <?= $_SESSION['clientID']; ?> </option>
                     <option value="1">1</option>
                     <option value="3">3</option>
@@ -574,8 +605,6 @@ $conn->close();
                     <option value="UPDATE">Update client record</option>
                     <option value="DELETE">Delete client record</option>
                 </select>
-
-
 
                 <label for="firstName">First name</label>
                 <input type="text" name="firstName" id="firstName" value="<?= $row['firstName'] ?>">
@@ -638,7 +667,6 @@ $conn->close();
                 <label for="clientNotes">Client notes</label>
                 <input type="textarea" name="clientNotes" id="clientNotes" value="<?= $row['clientNotes'] ?>">
 
-
                 <button type="submit">Submit</button>
 
             </form>
@@ -650,8 +678,8 @@ $conn->close();
 
                 <!-- FORM ID     -->
                 <input type="hidden" name="formID" id="appForm" value="appForm">
-                <label for="appClientID">Client ID: </label>
-                <input type="text" name="appClientID" id="appClientID" value="<?= $_SESSION['clientID']; ?>">
+                <label hidden for="appClientID">Client ID: </label>
+                <input hidden type="text" name="appClientID" id="appClientID" value="<?= $_SESSION['clientID']; ?>">
 
                  <select name="CRUDapp">
                     <option value="CREATE">Create new appointment</option>
@@ -659,10 +687,9 @@ $conn->close();
                     <option value="DELETE">Delete appointment</option>
                 </select>
 
-
                 <label for="appType">Appointment type</label>
                 <select name="appType" id="appType">
-                    <option selected></option>
+                    <option selected><?=$approw['appType']?></option>
                     <option>Lash extensions - classic full set: 120</option>
                     <option>Lash extensions - hybrid: 140</option>
                     <option>Lash extensions - light volume: 160</option>
@@ -678,61 +705,57 @@ $conn->close();
                 </select>
 
                 <label for="cost">Cost</label>
-                <input type="number" value="000.00"name="cost" id="cost">
+                <input type="number" name="cost" id="cost" value="<?=$approw['cost']?>">
 
                 <label for="appDate">Date</label>
-                <input type="date" name="appDate" id="appDate">
+                <input type="date" name="appDate" id="appDate" value="<?=$approw['appDate']?>">
 
                 <label for="appTime">Time</label>
-                <input type="time" name="appTime" id="appTime">
+                <input type="time" name="appTime" id="appTime" value="<?=$approw['appTime']?>">
 
                 <label for="duration">Duration</label>
-                <input type="number" step="0.25" value="0.00" name="duration" id="duration">
+                <input type="number" step="0.25" name="duration" id="duration" value="<?=$approw['duration']?>">
 
                 <label for="lashLength">Lash lengths on right eye</label>
-                <input type="text" name="lashLength" id="lashLength">
+                <input type="text" name="lashLength" id="lashLength" value="<?=$approw['lashLength']?>">
 
                 <label for="lashBrand">Lash brand</label>
-                <input type="text" name="lashBrand" id="lashBrand">
+                <input type="text" name="lashBrand" id="lashBrand" value="<?=$approw['lashBrand']?>">
 
                 <label for="lashWidth">Lash diameter</label>
-                <input type="text" name="lashWidth" id="lashWidth">
+                <input type="text" name="lashWidth" id="lashWidth" value="<?=$approw['lashWidth']?>">
 
                 <label for="lashCurl">Lash curl</label>
-                <input type="text" name="lashCurl" id="lashCurl">
+                <input type="text" name="lashCurl" id="lashCurl" value="<?=$approw['lashCurl']?>">
 
                 <label for="adhesive">Adhesive</label>
-                <input type="text" name="adhesive" id="adhesive">
+                <input type="text" name="adhesive" id="adhesive" value="<?=$approw['adhesive']?>">
 
                 <label for="remover">Remover</label>
-                <input type="text" name="remover" id="remover">
+                <input type="text" name="remover" id="remover" value="<?=$approw['remover']?>">
 
                 <label for="tint">Tint</label>
-                <input type="text" name="tint" id="tint">
+                <input type="text" name="tint" id="tint" value="<?=$approw['tint']?>">
 
                 <label for="lift">Lift</label>
-                <input type="text" name="lift" id="lift">
+                <input type="text" name="lift" id="lift" value="<?=$approw['lift']?>">
 
                 <label for="appNotes">Notes</label>
-                <input type="textarea" name="appNotes" id="appNotes">
+                <input type="textarea" name="appNotes" id="appNotes" value="<?=$approw['appNotes']?>">
 
                 <label for="beforePhoto">Before photo</label>
-                <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif">
+                <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['beforePhoto']?>">
 
                 <label for="afterPhoto">After photo</label>
-                <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif">
-
+                <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['afterPhoto']?>">
 
                 <button type="submit">Submit</button>
-
             </form>
-
         </div>
     </div>
 
+    <!-- This is the appointment list section below -->
     <section>
-
-        
         <?php 
             include 'dbconnect.php';
 
@@ -746,126 +769,93 @@ $conn->close();
 
                 if($client != "New client")
             
-                foreach($row as $appointment): ?>
+                    foreach($row as $appointment): ?>
 
-                    <div class="appointment-record-container">
-                     
-                        <h2> <?=$appointment['appType']?> </h2>
-                    
-                        <!-- <div class="when-container"> -->
-                        <div class="app-grid">
-                            <div>
-                                <h3>Cost</h3>
-                                <p> <?=$appointment['cost']?> </p>
-                            </div>
-                            <div>
-                                <h3>Duration</h3>
-                                <p> <?=$appointment['duration']?> </p>
-                            </div>
-                            <div>
-                                <h3>Time</h3>
-                                <p> <?=$appointment['appTime']?> </p>
-                            </div>
-                            <div>
-                                <h3>Date</h3>
-                                <p> <?=$appointment['appDate']?> </p>
-                            </div>
-                            <div>
-                                <h3>Lash length</h3>
-                                <p> <?=$appointment['lashLength']?> </p>
-                            </div>
-                            <div>
-                                <h3>Lash Brand</h3>
-                                <p> <?=$appointment['lashBrand']?> </p>
-                            </div>
-                            <div>
-                                <h3>Diameter</h3>
-                                <p> <?=$appointment['lashWidth']?> </p>
-                            </div>
-                            <div>
-                                <h3>Lash curl</h3>
-                                <p> <?=$appointment['lashCurl']?> </p>
-                            </div>
+                        <div class="appointment-record-container">
                         
-                            <div>
-                                <h3>Adhesive</h3>
-                                <p> <?=$appointment['adhesive']?> </p>
-                            </div>
-                            <div>
-                                <h3>Remover</h3>
-                                <p> <?=$appointment['remover']?> </p>
-                            </div>
-                            <div>
-                                <h3>Tint</h3>
-                                <p> <?=$appointment['tint']?> </p>
-                            </div>
-                            <div>
-                                <h3>Lift</h3>
-                                <p> <?=$appointment['lift']?> </p>
-                            </div>
-
-                        </div>
+                            <h2> <?=$appointment['appType']?> </h2>
+                            
                         
-                        <div>
-                            <h3>Notes</h3>
-                            <p> <?=$appointment['appNotes']?> </p>
-                        </div>
-                        <div class="photos">
-                            <div>
-                                <h3>Before photo</h3>
-                                <img src="photos/<?=$appointment['beforePhoto']?>">
+                            <!-- <div class="when-container"> -->
+                            <div class="app-grid">
+                                <div>
+                                    <h3>Cost</h3>
+                                    <p> <?=$appointment['cost']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Duration</h3>
+                                    <p> <?=$appointment['duration']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Time</h3>
+                                    <p> <?=$appointment['appTime']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Date</h3>
+                                    <p> <?=$appointment['appDate']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Lash length</h3>
+                                    <p> <?=$appointment['lashLength']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Lash Brand</h3>
+                                    <p> <?=$appointment['lashBrand']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Diameter</h3>
+                                    <p> <?=$appointment['lashWidth']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Lash curl</h3>
+                                    <p> <?=$appointment['lashCurl']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Adhesive</h3>
+                                    <p> <?=$appointment['adhesive']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Remover</h3>
+                                    <p> <?=$appointment['remover']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Tint</h3>
+                                    <p> <?=$appointment['tint']?> </p>
+                                </div>
+                                <div>
+                                    <h3>Lift</h3>
+                                    <p> <?=$appointment['lift']?> </p>
+                                </div>
                             </div>
                             <div>
-                                <h3>After photo</h3>
-                                <img src="photos/<?=$appointment['afterPhoto']?>">
+                                <h3>Notes</h3>
+                                <p> <?=$appointment['appNotes']?> </p>
                             </div>
-                        </div>
-                                
-                        </div>
+                            <div class="photos">
+                                <div>
+                                    <h3>Before photo</h3>
+                                    <img src="photos/<?=$appointment['beforePhoto']?>">
+                                </div>
+                                <div>
+                                    <h3>After photo</h3>
+                                    <img src="photos/<?=$appointment['afterPhoto']?>">
+                                </div>
+                            </div>
+                            <form method="POST" action="">
+                                <input type="hidden" name="formID" value="appList">
+                                <button type="submit" name="action" value="viewAppItem">View appointment details</button>
+
+                                <input type="hidden" name="appID" value="<?=$appointment['appID']?>">
+                            </form>
+                                    
+                            </div>
 
 
-                <?php endforeach; 
-                } else{
-                    $conn->close();
-                }   
+                    <?php endforeach; 
+                    } else{
+                        $conn->close();
+                    }   
         ?>
     </section>
-    <section class="form-container">
-        <h2>Appointments</h2>
-        <?php
-
-                    include 'dbconnect.php';
-                    $result = $conn->query("SELECT * FROM appointments WHERE clientID = '" . $_SESSION['clientID'] . "' ORDER BY appDate ASC");
-
-                   
-                    if($result->num_rows > 0) {
-                        
-                        echo "appointment found";
-                        $row = $result->fetch_all(MYSQLI_ASSOC);
-                        
-                
-                        foreach($row as $appItem): ?>
-                            <div class="app-listitem-container">
-                                <h4> <?=$appItem['appDate'] . " " . $appItem['appType'] ?> </h4>
-                                <form>
-                                    <input type="hidden" name="formID" value="appList">
-                                    <button name="action" value="appListItem">View appointment</button>
-
-                                </form>
-                        
-                        <?php endforeach; 
-                        } else{
-                            $conn->close();
-                        } 
-                
-                    ?>
-
-
-    </section>
-
-
-
-
-    
 </body>
 </html>
