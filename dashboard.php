@@ -12,11 +12,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             //set the session client ID
             $_SESSION['clientID'] = $_POST['clientID'];
 
-             if($_POST['action'] == 'View client record') {
+             if($_POST['action'] == 'viewRecord') {
                 header( "Location: clientrecord.php " );
                 //exit;
             }
-            if($_POST['action'] == 'View appointments') {
+            if($_POST['action'] == 'viewApps') {
 
                 include 'dbconnect.php';
                 $result = $conn->query("SELECT * FROM clients WHERE clientID ='" . $_SESSION['clientID'] . "'ORDER BY firstName ASC");
@@ -50,6 +50,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Dashboard</title>
 </head>
 <body>
+   
 
 <div class="client-record-container">
 
@@ -62,7 +63,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 $result = $conn->query("SELECT * FROM clients ORDER BY firstName ASC");
 
-                echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
+                // echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
 
 
                 if($result->num_rows > 0) {
@@ -80,9 +81,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <h3> <?=$clientItem['firstName'] . " " . $clientItem['lastName'] ?> </h3>
                                 <label hidden for="clientID">Client ID</label>
                                 <input hidden type="text" name="clientID" value="<?= $clientItem['clientID']?>">
-                                <input type="submit" name="action" value="View appointments">
-                                <input type="submit" name="action" value="View client record">
 
+                                <button name="action" type="submit" value="viewApps">View appointments</button>
+                                <button name="action" type="submit" value="viewRecord">View client record</button> 
                             </form>
                         
     
@@ -116,7 +117,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $result = $conn->query("SELECT * FROM appointments ORDER BY appDate ASC");
 
                 //echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
-                echo "<br><br> the client name is set to: " . $_SESSION['clientName'] . "<br>";
+                // echo "<br><br> the client name is set to: " . $_SESSION['clientName'] . "<br>";
 
                     //TO DO - display the client name here
 
@@ -145,12 +146,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     $result = $conn->query("SELECT * FROM appointments WHERE clientID = '" . $_SESSION['clientID'] . "' ORDER BY appDate ASC");
 
-                    // echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
-                    // echo "<br><br> the client name is set to: " . $_SESSION['clientName'] . "<br>";
-
-                        //TO DO - display the client name here
-
-                    
+                   
 
                     if($result->num_rows > 0) {
                         
@@ -160,7 +156,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 
                         foreach($row as $appItem): ?>
                             <div class="app-listitem-container">
-                                <h3> <?=$appItem['appDate'] . " " . $appItem['appType'] ?> </h3>
+                                <h4> <?=$appItem['appDate'] . " " . $appItem['appType'] ?> </h4>
                         
                         <?php endforeach; 
                         } else{

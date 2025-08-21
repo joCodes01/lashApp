@@ -5,34 +5,6 @@ session_start();
 $_SESSION['clientID'];
 
 
-
-// $CRUDclient = "";
-// $firstName = "";
-// $lastName = "";
-// $birthDate = "";
-// $email = "";
-// $phoneNumber = "";
-// $address = "";
-// $GPname = "";
-// $GPaddress = "";
-// $emergencyContactName = "";
-// $emergencyContactPhone = "";
-// $contactLenses = "";
-// $medicalConditions = "";
-// $allergies = "";
-// $medication = "";
-// $adhesivePatchTest = "";
-// $removerPatchTest = "";
-// $tintPatchTest = "";
-// $liftPatchTest = "";
-// $clientNotes = "";
-
-
-
-
-
-
-
 if($_SERVER["REQUEST_METHOD"] == "POST") {
     
     //if the form submitted is the client form then do these checks
@@ -48,10 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 //set the clientID to a session variable
                 $_SESSION['clientID'] = $clientID;
-                // echo "THE clientID VARIABLE IS SET TO: " . $clientID . "<br>";
-                // echo "THE clientID SESSION VARIABLE IS SET TO: " . $_SESSION['clientID'] . "<br>";
             }
-
             if(isset($_POST['CRUDclient'])){
                 $sanitize_CRUDclient = $_POST['CRUDclient'];
                 $CRUDclient = htmlspecialchars($sanitize_CRUDclient);
@@ -134,7 +103,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
 
-
             //if the form is set to CREATE then create a new record
             if($_POST['CRUDclient'] == 'CREATE') {
 
@@ -194,17 +162,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         $liftPatchTest,
                         $clientNotes);
                     $stmt->execute();
-                    //get the auto incremented client ID from the database.
-                    // $clientID = $conn->insert_id;
-
-                    // $_SESSION['clientID'] = $clientID;
-
-
+ 
                     $stmt->close();
-
-
-                }
-                
+                } 
             }
             //if the form is set to Update then update the existing record
             if($_POST['CRUDclient'] == 'UPDATE') {
@@ -275,10 +235,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->bind_param("i", $clientID);
                 $stmt->execute();
                 $stmt->close();
-
-                
                }
-
         }
 
          //if the form submitted is the appointment form then do these checks
@@ -290,7 +247,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $sanitize_appClientID = $_POST['appClientID'];
                 $appClientID = htmlspecialchars($sanitize_appClientID);
             }
-
             if(isset($_POST['CRUDapp'])){
                 $sanitize_CRUDapp = $_POST['CRUDapp'];
                 $CRUDapp = htmlspecialchars($sanitize_CRUDapp);
@@ -372,7 +328,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $imageFileType = strtolower(pathinfo($targetFile, PATHINFO_EXTENSION));
 
                 
-
                 //rename the uploaded file to a date string
                 $targetFileRename = $targetDir . $dateString . "_before" . "." . $imageFileType;
                 //set the image file name for upload to DB
@@ -411,8 +366,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     //connect to the database
                     include "dbconnect.php";
-
-                
                 }
             
             } 
@@ -420,7 +373,6 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 //if no file is uploaded then default to placeholder.jpg
                 $beforePhoto = "placeholder.jpg";
             }
-
 
 
             //UPLOAD AFTER PHOTO
@@ -477,10 +429,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     //connect to the database
                     include "dbconnect.php";
                 }
-
-            
-            } 
-            else {
+            }else {
                 //if no file is uploaded then default to placeholder.jpg
                 $afterPhoto = "placeholder.jpg";
             }
@@ -548,26 +497,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->close();
                 }
             }
-
-            // if($_POST['CRUDapp'] == 'UPDATE') {
-
-            //     include 'dbconnect.php';
-
-            //     $conn->query("SELECT appID FROM appointments WHERE clientID ")
-
-            // }
-
-            // if($_POST['CRUDapp'] == 'DELETE') {
-
-
-            // }
-
-
         }
-
-
-
-
     }
 }
 
@@ -577,20 +507,10 @@ $client = $_SESSION['clientID'];
 $result = $conn->query("SELECT * FROM clients WHERE clientID = '$client' ");
 
 
-// echo "<br><br>";
-// echo "the client variable is set to: " . $client;
-// echo "<br><br>";
-// // var_dump($result);
-// echo "<br><br>";
-
-
 if($result->num_rows > 0) {
     // echo "client found";
 
     $row = $result->fetch_assoc();
-
-    // var_dump($row);
-
 
 }else {
     $row['firstName'] = "";
@@ -612,15 +532,8 @@ if($result->num_rows > 0) {
     $row['tintPatchTest'] = "";
     $row['liftPatchTest'] = "";
     $row['clientNotes'] = "";
-
 }
 $conn->close();
-
-//if client ID is new client- form fields should be empty
-    //CRUD action should be CREATE
-
-//if client ID is not = new client- form fields should be populated with the client data
-
 ?>
 
 
@@ -634,6 +547,9 @@ $conn->close();
     <title>Client Record</title>
 </head>
 <body>
+     <header>
+        <a href="dashboard.php">Dashboard</a>
+    </header>
    
     <h1>Client Record</h1>
     <div class="client-record-container">
@@ -822,19 +738,12 @@ $conn->close();
 
             $result = $conn->query("SELECT * FROM appointments WHERE clientID = '$client' ORDER BY appDate DESC");
 
-            echo "<br><br> the client id is set to: " . $client . "<br>";
-
-
-
             if($result->num_rows > 0) {
                 
                 echo "client found";
 
                 $row = $result->fetch_all(MYSQLI_ASSOC);
 
-                // echo "<pre>";
-                // var_dump($row);
-                // echo "</pre>";
                 if($client != "New client")
             
                 foreach($row as $appointment): ?>
@@ -915,18 +824,42 @@ $conn->close();
                         </div>
 
 
-                    
-
-   
                 <?php endforeach; 
                 } else{
                     $conn->close();
-                }
-                
+                }   
         ?>
-            
+    </section>
+    <section class="form-container">
+        <h2>Appointments</h2>
+        <?php
 
-            
+                    include 'dbconnect.php';
+                    $result = $conn->query("SELECT * FROM appointments WHERE clientID = '" . $_SESSION['clientID'] . "' ORDER BY appDate ASC");
+
+                   
+                    if($result->num_rows > 0) {
+                        
+                        echo "appointment found";
+                        $row = $result->fetch_all(MYSQLI_ASSOC);
+                        
+                
+                        foreach($row as $appItem): ?>
+                            <div class="app-listitem-container">
+                                <h4> <?=$appItem['appDate'] . " " . $appItem['appType'] ?> </h4>
+                                <form>
+                                    <input type="hidden" name="formID" value="appList">
+                                    <button name="action" value="appListItem">View appointment</button>
+
+                                </form>
+                        
+                        <?php endforeach; 
+                        } else{
+                            $conn->close();
+                        } 
+                
+                    ?>
+
 
     </section>
 
