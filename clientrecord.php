@@ -48,8 +48,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 //set the clientID to a session variable
                 $_SESSION['clientID'] = $clientID;
-                echo "THE clientID VARIABLE IS SET TO: " . $clientID . "<br>";
-                echo "THE clientID SESSION VARIABLE IS SET TO: " . $_SESSION['clientID'] . "<br>";
+                // echo "THE clientID VARIABLE IS SET TO: " . $clientID . "<br>";
+                // echo "THE clientID SESSION VARIABLE IS SET TO: " . $_SESSION['clientID'] . "<br>";
             }
 
             if(isset($_POST['CRUDclient'])){
@@ -577,19 +577,19 @@ $client = $_SESSION['clientID'];
 $result = $conn->query("SELECT * FROM clients WHERE clientID = '$client' ");
 
 
-echo "<br><br>";
-echo "the client variable is set to: " . $client;
-echo "<br><br>";
-var_dump($result);
-echo "<br><br>";
+// echo "<br><br>";
+// echo "the client variable is set to: " . $client;
+// echo "<br><br>";
+// // var_dump($result);
+// echo "<br><br>";
 
 
 if($result->num_rows > 0) {
-    echo "client found";
+    // echo "client found";
 
     $row = $result->fetch_assoc();
 
-    var_dump($row);
+    // var_dump($row);
 
 
 }else {

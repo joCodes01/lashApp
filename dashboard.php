@@ -1,5 +1,6 @@
 <?php
 session_start();
+$_SESSION['clientName'];
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -7,30 +8,33 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
     //if the form submitted is the client form then do these checks
     if(isset($_POST['formID'])){
 
-        if ($_POST['formID'] == 'clientItemForm') {
-            $test = $_POST['action'];
-            echo $test;
+        if($_POST['formID'] == 'clientItemForm') {
+            //set the session client ID
+            $_SESSION['clientID'] = $_POST['clientID'];
+
+             if($_POST['action'] == 'View client record') {
+                header( "Location: clientrecord.php " );
+                //exit;
+            }
             if($_POST['action'] == 'View appointments') {
 
-                //use the client ID 
-                $_SESSION['clientID'] = $_POST['clientID'];
-                $test2 = $_SESSION['clientID'];
-                echo "<br>I have just set the client ID to " . $test2;
+                include 'dbconnect.php';
+                $result = $conn->query("SELECT * FROM clients WHERE clientID ='" . $_SESSION['clientID'] . "'ORDER BY firstName ASC");
 
+                $row = $result->fetch_assoc();
+
+                $_SESSION['clientName'] = $row['firstName'] . " " . $row['lastName'];
+               
             }
         }
-
-        
-
+        if($_POST['formID'] == 'showAllApps') {
+            $_SESSION['clientID'] = 'allClients';
+            $_SESSION['clientName'] = "All clients";
+        }
     }
 }
 
-echo "checking the session clientID: " . $_SESSION['clientID'];
 
-//Notes
-//If "view appointments" is clicked- set the $_SESSION_['clientID] to the selected client clientID show THIS clients appoinements in "Appointments" card 
-//If "view client record" is clicked- set the $_SESSION_['clientID] to the selected client and go to "Client Record" page with pre-filled client details
-    //and an empty new appointment but with client ID filled for the DB isertion.
 //Add a button to "Show all client appointments.
 
 
@@ -54,7 +58,6 @@ echo "checking the session clientID: " . $_SESSION['clientID'];
 
     <!-- for each loop through the clients n the database and list them here -->
     <?php
-
     include 'dbconnect.php';
 
                 $result = $conn->query("SELECT * FROM clients ORDER BY firstName ASC");
@@ -62,21 +65,10 @@ echo "checking the session clientID: " . $_SESSION['clientID'];
                 echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
 
 
-
                 if($result->num_rows > 0) {
                     
-                    echo "client found";
-
                     $row = $result->fetch_all(MYSQLI_ASSOC);
-
-                    // echo "<pre>";
-                    // var_dump($row);
-                    // echo "</pre>";
-
-                    // if($client != "New client")
-
-
-                
+               
                     foreach($row as $clientItem): ?>
 
                     <!-- insert html here-->
@@ -101,56 +93,81 @@ echo "checking the session clientID: " . $_SESSION['clientID'];
                     ?>
 
 
-
-
     </section>
 
     <section class="form-container">
         <h2>Appointments</h2>
+        <form method="POST" action="">
+            <input type="hidden" name="formID" value="showAllApps">
+            <input type="submit" name="action" value="Show all appointments">
+        </form>
+        <h3><?=$_SESSION['clientName']?></h3>
 
     <!-- for each loop through the appointmentss n the database and list them here based on client selected-->
 
     <!-- check the $_SESSION['clientID'] -->
 
     <?php
-    include 'dbconnect.php';
+                if($_SESSION['clientID'] == 'allClients') {
+                    
+                    // echo "its working";
+                     include 'dbconnect.php';
 
                 $result = $conn->query("SELECT * FROM appointments ORDER BY appDate ASC");
 
-                echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
+                //echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
+                echo "<br><br> the client name is set to: " . $_SESSION['clientName'] . "<br>";
 
+                    //TO DO - display the client name here
 
+                   
 
                 if($result->num_rows > 0) {
                     
-                    echo "appointment found";
-
+                    // echo "appointment found";
                     $row = $result->fetch_all(MYSQLI_ASSOC);
-
-                    // echo "<pre>";
-                    // var_dump($row);
-                    // echo "</pre>";
-
-                    // if($client != "New client")
-
-
-                
+                    
+            
                     foreach($row as $appItem): ?>
-
-                    <!-- insert html here-->
-
                         <div class="app-listitem-container">
-                        
                             <h3> <?=$appItem['appDate'] . " " . $appItem['appType'] ?> </h3>
-                        
-    
+                    
                     <?php endforeach; 
                     } else{
                         $conn->close();
                     } 
+
+                }else {
+
+
+
+                    include 'dbconnect.php';
+
+                    $result = $conn->query("SELECT * FROM appointments WHERE clientID = '" . $_SESSION['clientID'] . "' ORDER BY appDate ASC");
+
+                    // echo "<br><br> the client id is set to: " . $_SESSION['clientID'] . "<br>";
+                    // echo "<br><br> the client name is set to: " . $_SESSION['clientName'] . "<br>";
+
+                        //TO DO - display the client name here
+
+                    
+
+                    if($result->num_rows > 0) {
+                        
+                        // echo "appointment found";
+                        $row = $result->fetch_all(MYSQLI_ASSOC);
+                        
+                
+                        foreach($row as $appItem): ?>
+                            <div class="app-listitem-container">
+                                <h3> <?=$appItem['appDate'] . " " . $appItem['appType'] ?> </h3>
+                        
+                        <?php endforeach; 
+                        } else{
+                            $conn->close();
+                        } 
+                }
                     ?>
-
-
 
     </section>
 </div>
