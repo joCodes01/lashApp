@@ -1,3 +1,7 @@
+#beforePhotoImage, #afterPhotoImage {
+    width: 200px;
+}
+
 *, *:before, *:after {
   box-sizing: border-box;
 }

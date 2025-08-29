@@ -745,9 +745,11 @@ $conn->close();
 
                 <label for="beforePhoto">Before photo</label>
                 <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['beforePhoto']?>">
+                <img src="photos/placeholder.jpg" id="beforePhotoImage">  
 
                 <label for="afterPhoto">After photo</label>
                 <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['afterPhoto']?>">
+                <img src="photos/placeholder.jpg" id="afterPhotoImage">  
 
                 <button type="submit">Submit</button>
             </form>
