@@ -1,61 +1,201 @@
-#beforePhotoImage, #afterPhotoImage {
-    width: 200px;
+#beforePhotoImage,
+#afterPhotoImage {
+  width: 200px;
 }
-
-*, *:before, *:after {
-  box-sizing: border-box;
-}
-h1{
-    text-align: center;
-}
-
-.client-record-container{
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-.form-container {
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: 3rem;
-    margin: 2rem;
-}
-.CRUD-form{
-    display: flex;
-    flex-direction: column;
-}
-
-.appointment-record-container {
-    margin: 2rem;
-    border: 1px solid black;
-    border-radius: 20px;
-    padding: 2rem;
-}
-
-.appointment-record-container img{
-    max-width: 200px;
-}
-.photos{
-    display: flex;
-    flex-direction: row;
-}
-
-/* .when-container {
-    display: flex;
-    flex-direction: row;
-}
-.when-container div{
-    margin-right: 5rem;
-}
-.lash-container{
-    display: flex;
-    flex-direction: row;
-}
-.lash-container div{
-    margin-right: 5rem;
+/* * {
+  border: 1px solid red;
 } */
- .app-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    
- }
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --col-background: white;
+  --col-brand-light: #d4f4ef;
+  --col-brand-primary: #82d8d0;
+  --col-brand-mid: #00707c;
+  --col-brand-dark: #004148;
+  --col-brand-darkest: #001e21;
+  --col-brand-accent: #ea2da0;
+}
+body {
+  background-color: var(--col-brand-mid);
+  padding: 0;
+  margin: 0;
+}
+header {
+  height: 100px;
+}
+nav {
+  height: 40px;
+}
+
+h1 {
+  text-align: center;
+  color: var(--col-brand-dark);
+  margin: 0;
+}
+label {
+  margin: 0.5rem 0 0.3rem 0;
+}
+.client-record-container {
+  min-width: 1060px;
+}
+.nav-container {
+  background-color: var(--col-brand-primary);
+  margin: 0;
+}
+.nav-container nav ul li {
+  padding: 1rem;
+}
+.nav-container nav ul li a {
+  text-decoration: none;
+  color: var(--col-brand-darkest);
+}
+.form-container {
+  border-radius: 20px;
+  padding: 3rem;
+  margin: 2rem;
+}
+.CRUD-form {
+  display: flex;
+  flex-direction: column;
+}
+.appointment-record-container {
+  margin: 2rem;
+  border: 1px solid black;
+  border-radius: 20px;
+  padding: 2rem;
+}
+.appointment-record-container img {
+  max-width: 200px;
+}
+.appointments-name {
+  margin-bottom: 1rem;
+}
+.photos {
+  display: flex;
+  flex-direction: row;
+}
+.app-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+}
+.clients-heading-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.appointments-heading-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.client-name-btn {
+  background-color: var(--col-brand-light);
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  text-align: left;
+  padding-left: 1rem;
+}
+.client-listitem-container {
+  margin-bottom: 0.5rem;
+  /* padding: 1rem; */
+  height: 62px;
+  border-radius: 10px;
+  background-color: var(--col-brand-light);
+}
+.client-listitem-container form {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+}
+.client-record-btn {
+  margin-right: 1rem;
+}
+.app-date-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.app-date-container button {
+  margin-left: auto;
+}
+.app-listitem-container {
+  background-color: var(--col-brand-light);
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+}
+#appClientName {
+  margin: 0;
+}
+.app-listitem-container-single form {
+  border: 1px solid lightgray;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 10px;
+  background-color: var(--col-brand-light);
+}
+.form-container {
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: var(--col-brand-primary);
+}
+.client-name-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+.client-record-inner-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-items: center;
+}
+#clientNotes {
+  height: 250px;
+  width: 100%;
+  padding: 0.5rem;
+}
+.dashboard-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.client-record-inner-container > div {
+  display: flex;
+  padding: 2rem;
+  flex-direction: column;
+  margin: 0.5rem;
+  background-color: var(--col-brand-light);
+  border-radius: 10px;
+  min-width: 400px;
+}
+#clientForm div div div {
+  display: flex;
+  flex-direction: column;
+}
+#addNewClient {
+  padding: 1rem;
+  border: none;
+  background-color: transparent;
+}
+#addNewClient img {
+  width: 30px;
+}
