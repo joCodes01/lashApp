@@ -15,7 +15,7 @@ Simple client management system for lash service clients.
 
 
 **Side note:**
-I'm doing ladies eyelash services as a side business whilst learning to code so this app will be very useful for me./
+I'm doing ladies eyelash services as a side business whilst learning to code so this app will be very useful for me.\
 And yes, I've made a few mistakes along the way whilst coding this app but I am learning by doing and not just copying code from AI. I definetly see the benefit of AI and am using it to help me but I learn some solid lessons from my own mistakes! :joy:
 
 
