@@ -79,7 +79,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 <h2>Clients</h2>
                 <form method="POST" action="">
                     <input type="hidden" name="formID" value="addNewClient">
-                    <button type="submit" id="addNewClient" name="action" value="Add new client"><img src="images/plus.png"><button>
+                    <button type="submit" id="addNewClient" name="action" value="Add new client"><img src="images/plus.png"></button>
                 </form>
             </div>
             

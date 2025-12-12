@@ -594,7 +594,7 @@ $conn->close();
     <header class="nav-container">
         <nav>
             <ul>
-                <li><a href="dashboard.php">Back to dashboard</a></li>
+                <li><a class="back-link" href="dashboard.php"><img class="arrow" src="images/arrow.png" alt="">Dashboard</a></li>
             </ul>
         </nav>
         
@@ -622,7 +622,7 @@ $conn->close();
                 <div class="client-name-section">
                     <h2><?= htmlspecialchars($row['firstName']) . " " . htmlspecialchars($row['lastName']) ?></h2>
                     <div>
-                        <label for="CRUDclient">Action </label>
+                        <!-- <label for="CRUDclient">Action </label> -->
 
                     <?php
                     if ($_SESSION['addNewClient'] == "addNewClient") {
@@ -735,21 +735,23 @@ $conn->close();
 
             </form>
         </div>
-        <div class="form-container">
-            <h2>Appointment details</h2>
+        <div class="form-container appointment-form-container">
+           
             
             <form method="POST" action="" id="appForm" class="CRUD-form" enctype="multipart/form-data">
 
-                <!-- FORM ID     -->
-                <input type="hidden" name="formID" id="appForm" value="appForm">
-                <label hidden for="appClientID">Client ID: </label>
-                <input hidden type="text" name="appClientID" id="appClientID" value="<?= htmlspecialchars($_SESSION['clientID']); ?>">
-
-                 <select name="CRUDapp">
-                    <option value="CREATE">Create new appointment</option>
-                    <option value="UPDATE">Update appointment</option>
-                    <option value="DELETE">Delete appointment</option>
-                </select>
+                <div>
+                    <h2>Appointment details</h2>
+                        <!-- FORM ID     -->
+                        <input type="hidden" name="formID" id="appForm" value="appForm">
+                        <label hidden for="appClientID">Client ID: </label>
+                        <input hidden type="text" name="appClientID" id="appClientID" value="<?= htmlspecialchars($_SESSION['clientID']); ?>">
+                        <select name="CRUDapp">
+                            <option value="CREATE">Create new appointment</option>
+                            <option value="UPDATE">Update appointment</option>
+                            <option value="DELETE">Delete appointment</option>
+                        </select>
+                </div>
 
                 <div>
                     <label for="appType">Appointment type</label>
@@ -771,63 +773,60 @@ $conn->close();
                 </div>
 
                 <div>
-                    <label for="cost">Cost</label>
-                    <input type="number" name="cost" id="cost" value="<?=htmlspecialchars($approw['cost'])?>">
+                    <div>
+                        <label for="cost">Cost</label>
+                        <input type="number" name="cost" id="cost" value="<?=htmlspecialchars($approw['cost'])?>">
+                    </div>
+                    <div>
+                        <label for="appDate">Date</label>
+                        <input type="date" name="appDate" id="appDate" value="<?=htmlspecialchars($approw['appDate'])?>">
+                    </div>
+                    <div>
+                        <label for="appTime">Time</label>
+                        <input type="time" name="appTime" id="appTime" value="<?=htmlspecialchars($approw['appTime'])?>">
+                    </div>
+                    <div>
+                        <label for="duration">Duration</label>
+                        <input type="number" step="0.25" name="duration" id="duration" value="<?=htmlspecialchars($approw['duration'])?>">
+                    </div>
                 </div>
 
                 <div>
-                    <label for="appDate">Date</label>
-                    <input type="date" name="appDate" id="appDate" value="<?=htmlspecialchars($approw['appDate'])?>">
+                    <div>
+                        <label for="lashLength">Lash lengths on right eye</label>
+                        <input type="text" name="lashLength" id="lashLength" value="<?=htmlspecialchars($approw['lashLength'])?>">
+                    </div>
+                    <div>
+                        <label for="lashBrand">Lash brand</label>
+                        <input type="text" name="lashBrand" id="lashBrand" value="<?=htmlspecialchars($approw['lashBrand'])?>">
+                    </div>
+                    <div>
+                        <label for="lashWidth">Lash diameter</label>
+                        <input type="text" name="lashWidth" id="lashWidth" value="<?=htmlspecialchars($approw['lashWidth'])?>">
+                    </div>
+                    <div>
+                        <label for="lashCurl">Lash curl</label>
+                        <input type="text" name="lashCurl" id="lashCurl" value="<?=htmlspecialchars($approw['lashCurl'])?>">
+                    </div>
                 </div>
 
                 <div>
-                    <label for="appTime">Time</label>
-                    <input type="time" name="appTime" id="appTime" value="<?=htmlspecialchars($approw['appTime'])?>">
-                </div>
-
-                <div>
-                    <label for="duration">Duration</label>
-                    <input type="number" step="0.25" name="duration" id="duration" value="<?=htmlspecialchars($approw['duration'])?>">
-                </div>
-
-                <div>
-                    <label for="lashLength">Lash lengths on right eye</label>
-                    <input type="text" name="lashLength" id="lashLength" value="<?=htmlspecialchars($approw['lashLength'])?>">
-                </div>
-
-                <div>
-                    <label for="lashBrand">Lash brand</label>
-                    <input type="text" name="lashBrand" id="lashBrand" value="<?=htmlspecialchars($approw['lashBrand'])?>">
-                </div>
-
-                <div>
-                    <label for="lashWidth">Lash diameter</label>
-                    <input type="text" name="lashWidth" id="lashWidth" value="<?=htmlspecialchars($approw['lashWidth'])?>">
-                </div>
-
-                <div>
-                    <label for="lashCurl">Lash curl</label>
-                    <input type="text" name="lashCurl" id="lashCurl" value="<?=htmlspecialchars($approw['lashCurl'])?>">
-                </div>
-
-                <div>
-                    <label for="adhesive">Adhesive</label>
-                    <input type="text" name="adhesive" id="adhesive" value="<?=htmlspecialchars($approw['adhesive'])?>">
-                </div>
-
-                <div>
-                    <label for="remover">Remover</label>
-                    <input type="text" name="remover" id="remover" value="<?=htmlspecialchars($approw['remover'])?>">
-                </div>
-
-                <div>
-                    <label for="tint">Tint</label>
-                    <input type="text" name="tint" id="tint" value="<?=htmlspecialchars($approw['tint'])?>">
-                </div>
-
-                <div>
-                    <label for="lift">Lift</label>
-                    <input type="text" name="lift" id="lift" value="<?=htmlspecialchars($approw['lift'])?>">
+                    <div>
+                        <label for="adhesive">Adhesive</label>
+                        <input type="text" name="adhesive" id="adhesive" value="<?=htmlspecialchars($approw['adhesive'])?>">
+                    </div>
+                    <div>
+                        <label for="remover">Remover</label>
+                        <input type="text" name="remover" id="remover" value="<?=htmlspecialchars($approw['remover'])?>">
+                    </div>
+                    <div>
+                        <label for="tint">Tint</label>
+                        <input type="text" name="tint" id="tint" value="<?=htmlspecialchars($approw['tint'])?>">
+                    </div>
+                    <div>
+                        <label for="lift">Lift</label>
+                        <input type="text" name="lift" id="lift" value="<?=htmlspecialchars($approw['lift'])?>">
+                    </div>
                 </div>
 
                 <div>
@@ -836,20 +835,21 @@ $conn->close();
                 </div>
 
 
-                <?php
-                //TODO
-                //TODO
-                //if the images are set then show the images that are set, otherwise show the palceholder image.
-                ?>
+                    <?php
+                    //TODO
+                    //TODO
+                    //if the images are set then show the images that are set, otherwise show the palceholder image.
+                    ?>
 
 
-                <label for="beforePhoto">Before photo</label>
-                <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['beforePhoto']?>">
-                <img src="photos/placeholder.jpg" id="beforePhotoImage">  
-
-                <label for="afterPhoto">After photo</label>
-                <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['afterPhoto']?>">
-                <img src="photos/placeholder.jpg" id="afterPhotoImage">  
+                <div>
+                    <label for="beforePhoto">Before photo</label>
+                    <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['beforePhoto']?>">
+                    <img src="photos/placeholder.jpg" id="beforePhotoImage">
+                    <label for="afterPhoto">After photo</label>
+                    <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['afterPhoto']?>">
+                    <img src="photos/placeholder.jpg" id="afterPhotoImage">
+                </div>
 
                 <button type="submit">Submit</button>
             </form>
