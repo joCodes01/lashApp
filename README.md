@@ -11,7 +11,7 @@ Simple client management system for lash service clients.
 **Client Records**
 **Client Appointments**
 **Image uploads** for before and after images of each service.\
-**Past appointments** to see historical appointments per client.\
+**Past appointments** to see historical appointments per client.
 
 
 **Side note:**
