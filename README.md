@@ -2,16 +2,16 @@
 Simple client management system for lash service clients.
 
 ## The purpose of this project is to become more familiar with: 
-**php** and php coding standards, prepared statements and best practices.
+**php** and php coding standards, prepared statements and best practices.\
 **SQL** database structure and do's & dont's!
 
 ## The app includes:
-**Login & authentication** ( COMING SOON )
-**Dashboard** - See all clients, appointments per client and all appointments.
+**Login & authentication** ( COMING SOON )\
+**Dashboard** - See all clients, appointments per client and all appointments.\
 **Client Records**
 **Client Appointments**
-**Image uploads** for before and after images of each service.
-**Past appointments** to see historical appointments per client.
+**Image uploads** for before and after images of each service.\
+**Past appointments** to see historical appointments per client.\
 
 
 **Side note:**
