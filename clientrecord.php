@@ -17,10 +17,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         if($_POST['formID'] == 'clientForm') {
             
-            
 
             $message = "client form submitted";
-
             echo "<script>alert(" .  json_encode($message) . ")</script>";
 
         
@@ -183,7 +181,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     liftPatchTest = ?,
                     clientNotes = ? WHERE clientID = ?;");
 
-                $stmt->bind_param("sssssssssssssssssssi", 
+                $stmt->bind_param("sssssssssssssssssi", 
                     $firstName, 
                     $lastName,        
                     $birthDate, 
@@ -222,7 +220,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt->execute();
                 $stmt->close();
                }
+
+               header('Location: dashboard.php');
         }
+//APPOINTMENT FORM
 
          //if the form submitted is the appointment form then do these checks
         if($_POST['formID'] == 'appForm') {
@@ -235,6 +236,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
             if(isset($_POST['appClientID'])){
                 $appClientID = $_POST['appClientID'];
+            }
+            if(isset($_POST['appID'])){
+                $appID = $_POST['appID'];
             }
             if(isset($_POST['CRUDapp'])){
                 $CRUDapp = $_POST['CRUDapp'];
@@ -294,8 +298,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
                 
-                $message = "image is uploaded";
-                echo "<script>alert(" .  json_encode($message) . ")</script>";
+                // $message = "image is uploaded";
+                // echo "<script>alert(" .  json_encode($message) . ")</script>";
                 
                 
 
@@ -359,14 +363,19 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             else {
                 //if no file is uploaded then default to placeholder.jpg
                 $beforePhoto = "placeholder.jpg";
+                //  if (!empty($approw['beforePhoto'])) {
+                //     $beforePhoto = $approw['beforePhoto'];
+                // } else {
+                //     $beforePhoto = "placeholder.jpg";
+                // }
             }
 
 
             //UPLOAD AFTER PHOTO
             if(isset($_FILES['afterPhoto']) && $_FILES["afterPhoto"]["error"] === UPLOAD_ERR_OK) {
 
-                $message = "image is uploaded.";
-                echo "<script>alert(" .  json_encode($message) . ")</script>";
+                // $message = "image is uploaded.";
+                // echo "<script>alert(" .  json_encode($message) . ")</script>";
                 
 
                 //upload image   
@@ -427,7 +436,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             }else {
                 //if no file is uploaded then default to placeholder.jpg
                 $afterPhoto = "placeholder.jpg";
+                //    if (!empty($approw['afterPhoto'])) {
+                //     $afterPhoto = $approw['afterPhoto'];
+                // } else {
+                //     $afterPhoto = "placeholder.jpg";
+                // }
             }
+
+
+
+
+
 
             if($_POST['CRUDapp'] == 'CREATE') {
 
@@ -477,9 +496,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                         lift, 
                         appNotes,
                         beforePhoto,
-                        afterPhoto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        afterPhoto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-                    $stmt->bind_param("issssssssssssss", 
+                    $stmt->bind_param("issssssssssssssss", 
                         $appClientID,
                         $appType,    
                         $cost, 
@@ -503,6 +522,73 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                     $stmt->close();
                 }
             }
+            if($_POST['CRUDapp'] == 'UPDATE') {
+
+                include 'dbconnect.php';
+
+                $stmt = $conn->prepare("UPDATE appointments SET 
+                    appType = ?, 
+                    cost = ?, 
+                    appDate = ?, 
+                    appTime = ?, 
+                    duration = ?, 
+                    lashLength = ?, 
+                    lashBrand = ?, 
+                    lashWidth = ?, 
+                    lashCurl = ?, 
+                    adhesive = ?, 
+                    remover = ?, 
+                    tint = ?, 
+                    lift = ?, 
+                    appNotes = ?, 
+                    beforePhoto = ?, 
+                    afterPhoto = ?
+                WHERE appID = ?");
+
+                $stmt->bind_param("ssssssssssssssssi",
+                    $appType,
+                    $cost,
+                    $appDate,
+                    $appTime,
+                    $duration,
+                    $lashLength,
+                    $lashBrand,
+                    $lashWidth,
+                    $lashCurl,
+                    $adhesive,
+                    $remover,
+                    $tint,
+                    $lift,
+                    $appNotes,
+                    $beforePhoto,
+                    $afterPhoto,
+                    $appID   
+                );
+
+                $stmt->execute();
+                $stmt->close();
+            }
+
+
+                //if client form is set to DELETE then delete the record based on clientID in the form.
+               if($_POST['CRUDapp'] == 'DELETE') {
+
+                // echo "Delete the record";
+
+                //connect to the database
+                include 'dbconnect.php';
+
+
+                $stmt = $conn->prepare("DELETE FROM appointments WHERE appID = ?;");
+                $stmt->bind_param("i", $appID);
+                $stmt->execute();
+                $stmt->close();
+               }
+
+               header('Location: dashboard.php');
+
+
+
         }
     }
 }
@@ -733,119 +819,123 @@ $conn->close();
             <div class="form-container appointment-form-container">
             
                 <form method="POST" action="" id="appForm" class="CRUD-form" enctype="multipart/form-data">
+                       <div class="appointment-heading-container">
+                            <h2>Appointment details</h2>
+                                <!-- FORM ID     -->
+                                <input type="hidden" name="formID" id="appForm" value="appForm">
+                                <label hidden for="appClientID">Client ID: </label>
+                                <input hidden type="text" name="appClientID" id="appClientID" value="<?= $_SESSION['clientID']; ?>">
+                                <label hidden for="appID">Appointment ID: </label>
+                                <input hidden type="text" name="appID" id="appID" value="<?= $_SESSION['appID']; ?>">
+                                <select name="CRUDapp">
+                                    <option value="CREATE">Create new appointment</option>
+                                    <option value="UPDATE">Update appointment</option>
+                                    <option value="DELETE">Delete appointment</option>
+                                </select>
+                                <div class="app-type-container">
+                                    <label for="appType">Appointment type</label>
+                                    <select name="appType" id="appType">
+                                        <option selected><?=$approw['appType']?></option>
+                                        <option>Lash extensions - classic full set: 120</option>
+                                        <option>Lash extensions - hybrid: 140</option>
+                                        <option>Lash extensions - light volume: 160</option>
+                                        <option>Lash extensions - half set: 90</option>
+                                        <option>Lash extensions - classic - infills (up to 3 weeks): 90</option>
+                                        <option>Lash extensions - hybrid - infills (up to 3 weeks): 100</option>
+                                        <option>Lash extensions - light volume - infills (up to 3 weeks): 110</option>
+                                        <option>Lash extensions - removal: 35</option>
+                                        <option>Lash lift & tint: 95</option>
+                                        <option>Lash lift: 80</option>
+                                        <option>Lash tint: 30</option>
+                                        <option>Consultation</option>
+                                    </select>
+                                </div>
+                        </div>
 
-                    <div>
-                        <h2>Appointment details</h2>
-                            <!-- FORM ID     -->
-                            <input type="hidden" name="formID" id="appForm" value="appForm">
-                            <label hidden for="appClientID">Client ID: </label>
-                            <input hidden type="text" name="appClientID" id="appClientID" value="<?= htmlspecialchars($_SESSION['clientID']); ?>">
-                            <select name="CRUDapp">
-                                <option value="CREATE">Create new appointment</option>
-                                <option value="UPDATE">Update appointment</option>
-                                <option value="DELETE">Delete appointment</option>
-                            </select>
+                    <div class="appointment-details-container">
+                     
+                       
+                        <div>
+                            <div>
+                                <label for="cost">Cost</label>
+                                <input type="number" name="cost" id="cost" value="<?=htmlspecialchars($approw['cost'])?>">
+                            </div>
+                            <div>
+                                <label for="appDate">Date</label>
+                                <input type="date" name="appDate" id="appDate" value="<?=htmlspecialchars($approw['appDate'])?>">
+                            </div>
+                            <div>
+                                <label for="appTime">Time</label>
+                                <input type="time" name="appTime" id="appTime" value="<?=htmlspecialchars($approw['appTime'])?>">
+                            </div>
+                            <div>
+                                <label for="duration">Duration</label>
+                                <input type="number" step="0.25" name="duration" id="duration" value="<?=htmlspecialchars($approw['duration'])?>">
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <label for="lashLength">Lash lengths on right eye</label>
+                                <input type="text" name="lashLength" id="lashLength" value="<?=htmlspecialchars($approw['lashLength'])?>">
+                            </div>
+                            <div>
+                                <label for="lashBrand">Lash brand</label>
+                                <input type="text" name="lashBrand" id="lashBrand" value="<?=htmlspecialchars($approw['lashBrand'])?>">
+                            </div>
+                            <div>
+                                <label for="lashWidth">Lash diameter</label>
+                                <input type="text" name="lashWidth" id="lashWidth" value="<?=htmlspecialchars($approw['lashWidth'])?>">
+                            </div>
+                            <div>
+                                <label for="lashCurl">Lash curl</label>
+                                <input type="text" name="lashCurl" id="lashCurl" value="<?=htmlspecialchars($approw['lashCurl'])?>">
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <label for="adhesive">Adhesive</label>
+                                <input type="text" name="adhesive" id="adhesive" value="<?=htmlspecialchars($approw['adhesive'])?>">
+                            </div>
+                            <div>
+                                <label for="remover">Remover</label>
+                                <input type="text" name="remover" id="remover" value="<?=htmlspecialchars($approw['remover'])?>">
+                            </div>
+                            <div>
+                                <label for="tint">Tint</label>
+                                <input type="text" name="tint" id="tint" value="<?=htmlspecialchars($approw['tint'])?>">
+                            </div>
+                            <div>
+                                <label for="lift">Lift</label>
+                                <input type="text" name="lift" id="lift" value="<?=htmlspecialchars($approw['lift'])?>">
+                            </div>
+                        </div>
+                        <div class="notes-container">
+                            <label for="appNotes">Notes</label>
+                            <textarea name="appNotes" id="appNotes" value="<?=htmlspecialchars($approw['appNotes'])?>"><?=htmlspecialchars($approw['appNotes'])?></textarea>
+                        </div>
+                            <?php
+                            //TODO
+                            //TODO
+                            //if the images are set then show the images that are set, otherwise show the palceholder image.
+                            ?>
                     </div>
-
-                    <div>
-                        <label for="appType">Appointment type</label>
-                        <select name="appType" id="appType">
-                            <option selected><?=htmlspecialchars($approw['appType'])?></option>
-                            <option>Lash extensions - classic full set: 120</option>
-                            <option>Lash extensions - hybrid: 140</option>
-                            <option>Lash extensions - light volume: 160</option>
-                            <option>Lash extensions - half set: 90</option>
-                            <option>Lash extensions - classic - infills (up to 3 weeks): 90</option>
-                            <option>Lash extensions - hybrid - infills (up to 3 weeks): 100</option>
-                            <option>Lash extensions - light volume - infills (up to 3 weeks): 110</option>
-                            <option>Lash extensions - removal: 35</option>
-                            <option>Lash lift & tint: 95</option>
-                            <option>Lash lift: 80</option>
-                            <option>Lash tint: 30</option>
-                            <option>Consultation</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <div>
-                            <label for="cost">Cost</label>
-                            <input type="number" name="cost" id="cost" value="<?=htmlspecialchars($approw['cost'])?>">
+                     <div class="client-images-container">
+                            <div class="client-image-container">
+                                <img src="photos/placeholder.jpg" id="beforePhotoImage">
+                                <div class="image-controls">
+                                    <label for="beforePhoto">Before photo</label>
+                                    <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['beforePhoto']?>">
+                                </div>
+                            </div>
+                            <div class="client-image-container">
+                                <img src="photos/placeholder.jpg" id="afterPhotoImage">
+                                <div class="image-controls">
+                                    <label for="afterPhoto">After photo</label>
+                                    <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['afterPhoto']?>">
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label for="appDate">Date</label>
-                            <input type="date" name="appDate" id="appDate" value="<?=htmlspecialchars($approw['appDate'])?>">
-                        </div>
-                        <div>
-                            <label for="appTime">Time</label>
-                            <input type="time" name="appTime" id="appTime" value="<?=htmlspecialchars($approw['appTime'])?>">
-                        </div>
-                        <div>
-                            <label for="duration">Duration</label>
-                            <input type="number" step="0.25" name="duration" id="duration" value="<?=htmlspecialchars($approw['duration'])?>">
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>
-                            <label for="lashLength">Lash lengths on right eye</label>
-                            <input type="text" name="lashLength" id="lashLength" value="<?=htmlspecialchars($approw['lashLength'])?>">
-                        </div>
-                        <div>
-                            <label for="lashBrand">Lash brand</label>
-                            <input type="text" name="lashBrand" id="lashBrand" value="<?=htmlspecialchars($approw['lashBrand'])?>">
-                        </div>
-                        <div>
-                            <label for="lashWidth">Lash diameter</label>
-                            <input type="text" name="lashWidth" id="lashWidth" value="<?=htmlspecialchars($approw['lashWidth'])?>">
-                        </div>
-                        <div>
-                            <label for="lashCurl">Lash curl</label>
-                            <input type="text" name="lashCurl" id="lashCurl" value="<?=htmlspecialchars($approw['lashCurl'])?>">
-                        </div>
-                    </div>
-
-                    <div>
-                        <div>
-                            <label for="adhesive">Adhesive</label>
-                            <input type="text" name="adhesive" id="adhesive" value="<?=htmlspecialchars($approw['adhesive'])?>">
-                        </div>
-                        <div>
-                            <label for="remover">Remover</label>
-                            <input type="text" name="remover" id="remover" value="<?=htmlspecialchars($approw['remover'])?>">
-                        </div>
-                        <div>
-                            <label for="tint">Tint</label>
-                            <input type="text" name="tint" id="tint" value="<?=htmlspecialchars($approw['tint'])?>">
-                        </div>
-                        <div>
-                            <label for="lift">Lift</label>
-                            <input type="text" name="lift" id="lift" value="<?=htmlspecialchars($approw['lift'])?>">
-                        </div>
-                    </div>
-
-                    <div>
-                        <label for="appNotes">Notes</label>
-                        <input type="textarea" name="appNotes" id="appNotes" value="<?=htmlspecialchars($approw['appNotes'])?>">
-                    </div>
-
-
-                        <?php
-                        //TODO
-                        //TODO
-                        //if the images are set then show the images that are set, otherwise show the palceholder image.
-                        ?>
-
-
-                    <div>
-                        <label for="beforePhoto">Before photo</label>
-                        <input type="file" name="beforePhoto" id="beforePhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['beforePhoto']?>">
-                        <img src="photos/placeholder.jpg" id="beforePhotoImage">
-                        <label for="afterPhoto">After photo</label>
-                        <input type="file" name="afterPhoto" id="afterPhoto" accept=".png, .jpg, .jpeg, .gif" value="<?=$approw['afterPhoto']?>">
-                        <img src="photos/placeholder.jpg" id="afterPhotoImage">
-                    </div>
-
-                    <button type="submit">Submit</button>
+                        <button type="submit">Submit</button>
                 </form>
             </div>
         </div>
@@ -862,7 +952,7 @@ $conn->close();
 
                 if($result->num_rows > 0) {
                     
-                    echo "client found";
+                    // echo "client found";
 
                     $row = $result->fetch_all(MYSQLI_ASSOC);
 
@@ -877,21 +967,21 @@ $conn->close();
                             
                                 <!-- <div class="when-container"> -->
                                 <div class="app-grid">
-                                    <div>
-                                        <h3>Cost</h3>
-                                        <p> <?=htmlspecialchars($appointment['cost'])?> </p>
+                                     <div>
+                                        <h3>Date</h3>
+                                        <p> <?=htmlspecialchars($appointment['appDate'])?> </p>
                                     </div>
-                                    <div>
+                                      <div>
+                                        <h3>Time</h3>
+                                        <p> <?=htmlspecialchars($appointment['appTime'])?> </p>
+                                    </div>
+                                     <div>
                                         <h3>Duration</h3>
                                         <p> <?=htmlspecialchars($appointment['duration'])?> </p>
                                     </div>
                                     <div>
-                                        <h3>Time</h3>
-                                        <p> <?=htmlspecialchars($appointment['appTime'])?> </p>
-                                    </div>
-                                    <div>
-                                        <h3>Date</h3>
-                                        <p> <?=htmlspecialchars($appointment['appDate'])?> </p>
+                                        <h3>Cost</h3>
+                                        <p> <?=htmlspecialchars($appointment['cost'])?> </p>
                                     </div>
                                     <div>
                                         <h3>Lash length</h3>
@@ -933,11 +1023,11 @@ $conn->close();
                                 <div class="photos">
                                     <div>
                                         <h3>Before photo</h3>
-                                        <img src="photos/<?=$appointment['beforePhoto']?>">
+                                        <img class="photo" src="photos/<?=$appointment['beforePhoto']?>">
                                     </div>
                                     <div>
                                         <h3>After photo</h3>
-                                        <img src="photos/<?=$appointment['afterPhoto']?>">
+                                        <img class="photo" src="photos/<?=$appointment['afterPhoto']?>">
                                     </div>
                                 </div>
                                 <form method="POST" action="">

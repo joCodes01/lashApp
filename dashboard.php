@@ -1,7 +1,7 @@
 <?php
 session_start();
 $_SESSION['clientName'];
-$_SESSION['addNewClient'] = "";
+$_SESSION['addNewClient'];
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -69,9 +69,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             <h1>Dashboard</h1>
         </header>
         <div class="dashboard-container">
-            <section class="form-container">
+            <section class="form-container-client">
                 <div class="clients-heading-container">
+
                     <h2>Clients</h2>
+
                     <form method="POST" action="">
                         <input type="hidden" name="formID" value="addNewClient">
                         <button type="submit" id="addNewClient" name="action" value="Add new client"><img src="images/plus.png"></button>
@@ -119,12 +121,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
             </section>
-            <section class="form-container">
+            <section class="form-container-client">
                 <div class="appointments-heading-container">
+
                     <h2>Appointments</h2>
+
                         <form method="POST" action="">
                             <input type="hidden" name="formID" value="showAllApps">
-                            <input type="submit" name="action" value="Show all">
+                            <button class="show-all-btn" type="submit" name="action" value="Show all">Show all</button>
                         </form>
                 </div>
                 
@@ -144,7 +148,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                             $stmt = $conn->prepare("SELECT appointments.*, clients.firstName, clients.lastName 
                                                     FROM appointments
                                                     INNER JOIN clients ON appointments.clientID = clients.clientID
-                                                    ORDER BY appointments.appDate ASC
+                                                    ORDER BY appointments.appDate DESC
                                                     ");
                             $stmt-> execute();
                             $result = $stmt->get_result();
@@ -163,8 +167,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <input type="hidden" name="clientID" value="<?= $appItem['clientID'] ?>">
                                                 
                                                 <div class="app-date-container">
-                                                    <p><?= htmlspecialchars($appItem['appDate']) . " " . htmlspecialchars($appItem['appTime'])?></p>
-                                                    <button type="submit">Details</button>
+                                                    <p class="display-date"><?= htmlspecialchars($appItem['appDate'])?></p>
+                                                    <p class="display-time"><?= htmlspecialchars($appItem['appTime'])?></p>
+                                                    <button class="details-btn" type="submit">Details</button>
                                                 </div>
                                                 
                                                 <p id="appClientName"><?=htmlspecialchars($appItem['firstName']) . " " . htmlspecialchars($appItem['lastName']) ?></p>
@@ -198,8 +203,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <input type="hidden" name="appID" value="<?= htmlspecialchars($appItem['appID']) ?>">
                                         <input type="hidden" name="clientID" value="<?= htmlspecialchars($appItem['clientID']) ?>">
                                         <div class="app-date-container">
-                                            <p><?= htmlspecialchars($appItem['appDate']) . " " . htmlspecialchars($appItem['appTime']) ?></p>
-                                            <button type="submit">Details</button>
+                                            <p class="display-date"><?= htmlspecialchars($appItem['appDate'])?></p>
+                                            <p class="display-time"><?= htmlspecialchars($appItem['appTime'])?></p>
+                                            <button class="details-btn" type="submit">Details</button>
                                         </div>
                                         <p><?= htmlspecialchars($appItem['appType']) ?></p>
                                     </form>

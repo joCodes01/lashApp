@@ -37,6 +37,7 @@ body {
     var(--col-brand-darkest),
     var(--col-brand-primary)
   );
+  /* background-color: var(--col-brand-darkest); */
   padding: 0;
   margin: 0;
   color: var(--col-grey-600);
@@ -44,7 +45,7 @@ body {
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 header {
-  height: 100px;
+  height: 120px;
 }
 nav {
   height: 40px;
@@ -62,7 +63,7 @@ nav {
 h1 {
   text-align: center;
   color: var(--col-white-lightest);
-  margin: 0;
+  /* margin-bottom: 10rem; */
 }
 label {
   margin: 0.5rem 0 0.3rem 0;
@@ -85,27 +86,42 @@ label {
   border-radius: 20px;
   padding: 3rem;
   margin: 2rem;
+  background-color: transparent;
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
 }
+.form-container-client {
+  border-radius: 20px;
+  padding: 3rem;
+  margin: 2rem;
+  background-color: var(--col-grey-100);
+  width: 90%;
+  margin-right: auto;
+  margin-left: auto;
+}
+
 .CRUD-form {
   display: flex;
   flex-direction: column;
 }
 .appointment-record-container {
-  margin: 2rem;
-  border: 1px solid black;
+  margin: 4rem;
+
   border-radius: 20px;
   padding: 2rem;
 }
 .appointment-record-container img {
   max-width: 200px;
 }
+.appointment-record-container h2 {
+  margin-bottom: 3rem;
+  margin-top: 2rem;
+}
 .appointments-name {
   margin-bottom: 1rem;
 }
-.photos {
-  display: flex;
-  flex-direction: row;
-}
+
 .app-grid {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -135,6 +151,7 @@ label {
   text-align: left;
   padding-left: 1rem;
 }
+
 .client-listitem-container {
   margin-bottom: 0.5rem;
   /* padding: 1rem; */
@@ -153,6 +170,14 @@ label {
 }
 .client-record-btn {
   margin-right: 1rem;
+  padding: 0.3rem;
+  width: 150px;
+}
+.show-all-btn {
+  padding: 0.3rem;
+}
+.details-btn {
+  padding: 0.3rem;
 }
 .app-date-container {
   display: flex;
@@ -166,7 +191,7 @@ label {
   background-color: var(--col-white-lightest);
   padding: 1rem;
   margin-bottom: 0.5rem;
-  border-radius: 10px;
+  border-radius: 3px;
 }
 #appClientName {
   margin: 0;
@@ -178,12 +203,7 @@ label {
   border-radius: 10px;
   background-color: var(--col-white-lightest);
 }
-.form-container {
-  width: 90%;
-  margin-right: auto;
-  margin-left: auto;
-  background-color: var(--col-grey-100);
-}
+
 .client-name-section {
   display: flex;
   flex-direction: column;
@@ -200,11 +220,11 @@ label {
   justify-items: center;
 }
 #clientForm button {
-  margin-top: 1rem;
+  margin-top: 2rem;
   width: fit-content;
   padding: 0.5rem 1rem;
   margin-left: auto;
-  margin-right: 1rem;
+  margin-right: auto;
 }
 #clientNotes {
   height: 250px;
@@ -217,13 +237,17 @@ label {
 .dashboard-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  /* background-color: transparent; */
+  /* opacity: 0; */
+
+  height: 95vh;
 }
 .client-record-inner-container > div {
   display: flex;
   padding: 2rem;
   flex-direction: column;
   margin: 0.5rem;
-  background-color: var(--col-white-lightest);
+  background-color: var(--col-grey-100);
   border-radius: 10px;
   min-width: 400px;
 }
@@ -239,7 +263,105 @@ label {
 #addNewClient img {
   width: 30px;
 }
+.appointment-heading-container select {
+  width: fit-content;
+  margin-bottom: 2rem;
+}
+.appointment-heading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .appointment-form-container h2 {
   text-align: center;
   margin-bottom: 1rem;
+}
+.appointment-form-container {
+  background-color: var(--col-grey-100);
+}
+
+.appointment-details-container {
+  padding: 0 3rem;
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.app-type-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.appointment-details-container > div {
+  background-color: var(--col-grey-50);
+  border: 0.5px solid var(--col-grey-200);
+  box-shadow: 1px 1px 2px var(--col-grey-box-shadow);
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  border-radius: 10px;
+  margin: 1rem;
+}
+
+.appointment-details-container > div > div {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 0.5rem;
+}
+.client-images-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.client-image-container {
+  display: flex;
+  flex-direction: column;
+  margin: 2rem 2rem 0 2rem;
+}
+.client-image-container img {
+  /* min-width: 400px; */
+  min-width: 100%;
+}
+.image-controls {
+  display: flex;
+  flex-direction: column;
+  padding-top: 2rem;
+}
+#appForm button {
+  width: fit-content;
+  margin-top: 2rem;
+  padding: 0.5rem 1rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+.appointment-record-container {
+  background-color: var(--col-grey-100);
+  min-width: 1000px;
+}
+.app-grid div {
+  padding: 1rem 1rem 1rem 0;
+}
+.photos {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+}
+.photo {
+  min-width: 100%;
+}
+.notes-container {
+}
+#appNotes {
+  height: 100%;
+  width: 100%;
+  padding: 0.5rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  background: var(--col-white-lightest);
+  resize: none;
+}
+.display-time {
+  margin-left: 1.5rem;
 }
