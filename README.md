@@ -2,7 +2,7 @@
 Simple client management system for lash service clients.
 
 ## The purpose of this project is to become more familiar with: 
-**php** and php coding standards, prepared statements and best practices.\
+**PHP** and php coding standards, prepared statements and best practices.\
 **SQL** database structure and do's & dont's!
 
 ## The app includes:
@@ -13,7 +13,7 @@ Simple client management system for lash service clients.
 **Image uploads** for before and after images of each service.\
 **Past appointments** to see historical appointments per client.
 
-Since this is a php website it can't be viewed on GitHub pages.\
+Since this is a PHP website it can't be viewed on GitHub pages.\
 You can see a screenshot of the dashboard in its current state here: https://jocodes01.github.io/lashApp/
 
 **Side note:**
