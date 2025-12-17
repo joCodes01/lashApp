@@ -374,6 +374,6 @@ label {
   flex-direction: row;
   padding-bottom: 2rem;
 }
-video {
-  margin-left: 8rem;
+.app-text {
+  padding-right: 4rem;
 }
