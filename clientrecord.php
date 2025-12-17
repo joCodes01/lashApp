@@ -3,7 +3,7 @@
 session_start();
 //set client ID in session variable
 $_SESSION['clientID'];
-$_SESSION['appID'] = "";
+$_SESSION['appID'];
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {

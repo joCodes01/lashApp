@@ -1,7 +1,7 @@
 <?php
 session_start();
-$_SESSION['clientName'] = "";
-$_SESSION['addNewClient'] = "";
+$_SESSION['clientName'];
+$_SESSION['addNewClient'];
 
 
 if($_SERVER["REQUEST_METHOD"] == "POST") {
