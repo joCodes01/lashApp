@@ -369,3 +369,11 @@ label {
 .screenshot img {
   max-width: 100%;
 }
+.include-video {
+  display: flex;
+  flex-direction: row;
+  padding-bottom: 2rem;
+}
+video {
+  margin-left: 8rem;
+}
