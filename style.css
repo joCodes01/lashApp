@@ -377,3 +377,18 @@ label {
 .app-text {
   padding-right: 4rem;
 }
+.include-video iframe {
+  width: 100%;
+}
+
+@media screen and (max-width: 900px) {
+  .include-video {
+    flex-direction: column;
+  }
+  .include-video iframe {
+    max-width: 100%;
+  }
+  .app-text {
+    padding-right: 0;
+  }
+}
